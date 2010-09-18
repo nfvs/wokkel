@@ -1076,14 +1076,16 @@ class PubSubService(XMPPHandler, IQHandlerMixin):
 			if metaData:
 				form = data_form.Form(formType="result",
 									  formNamespace=NS_PUBSUB_META_DATA)
-				form.addField(
-						data_form.Field(
-							var='pubsub#node_type',
-							value=nodeType,
-							label='The type of node (collection or leaf)'
-						)
-				)
-
+				
+				# nfvs: dont add node_type, it should already be
+				# in the metadata
+				# form.addField(
+				# 		data_form.Field(
+				# 			var='pubsub#node_type',
+				# 			value=nodeType,
+				# 			label='The type of node (collection or leaf)'
+				# 		)
+				# )
 				for metaDatum in metaData:
 					form.addField(data_form.Field.fromDict(metaDatum))
 
