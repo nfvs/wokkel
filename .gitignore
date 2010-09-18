@@ -1,3 +1,6 @@
 build/
+dist/
+wokkel.egg-info/
 *.pyc
 *.tmproj
+

@@ -555,6 +555,9 @@ class PubSubRequest(generic.Stanza):
 			if 'optionsSet' in verbs and 'subscribe' in verbs:
 				self.verb = 'subscribe'
 				child = children[verbs.index('subscribe')]
+			elif 'configureSet' in verbs and 'create' in verbs:
+				self.verb = 'create'
+				child = children[verbs.index('create')]
 			else:
 				raise NotImplementedError()
 		else:
@@ -562,10 +565,6 @@ class PubSubRequest(generic.Stanza):
 
 		for parameter in self._parameters[self.verb]:
 			getattr(self, '_parse_%s' % parameter)(child)
-			#getattr(self, '_parse_%s' % parameter)(children[0])
-		#print 'Children: ' + str([c.toXml() for c in children])
-		#print 'Child: ' + str(child.toXml())
-
 
 
 	def send(self, xs):
@@ -1036,7 +1035,7 @@ class PubSubService(XMPPHandler, IQHandlerMixin):
 										'nodeIdentifier', 'subscriber']),
 		'subscriptions': ('subscriptions', ['sender', 'recipient']),
 		'affiliations': ('affiliations', ['sender', 'recipient']),
-		'create': ('create', ['sender', 'recipient', 'nodeIdentifier']),
+		'create': ('create', ['sender', 'recipient', 'nodeIdentifier', 'options']), # nfvs
 		'getConfigurationOptions': ('getConfigurationOptions', []),
 		'default': ('getDefaultConfiguration',
 					['sender', 'recipient', 'nodeType']),
@@ -1171,7 +1170,7 @@ class PubSubService(XMPPHandler, IQHandlerMixin):
 			handlerName, argNames = self._legacyHandlers[request.verb]
 			handler = getattr(self, handlerName)
 			args = [getattr(request, arg) for arg in argNames]
-			if 'options' in argNames:
+			if 'options' in argNames and request.options:
 				args[argNames.index('options')] = request.options.getValues()
 			d = handler(*args)
 
@@ -1360,7 +1359,7 @@ class PubSubService(XMPPHandler, IQHandlerMixin):
 		raise Unsupported('retrieve-affiliations')
 
 
-	def create(self, requestor, service, nodeIdentifier):
+	def create(self, requestor, service, nodeIdentifier, options=None):
 		raise Unsupported('create-nodes')
 
 
