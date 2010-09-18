@@ -410,12 +410,21 @@ class PubSubRequest(generic.Stanza):
 		"""
 		for element in verbElement.parent.elements():
 			if element.uri == NS_PUBSUB and element.name == 'configure':
+				
+				# options with namespace, e.g.
+				# <field var='FORM_TYPE' type='hidden'>
+				#   <value>http://jabber.org/protocol/pubsub#node_config</value>
+				# </field>
 				form = data_form.findForm(element, NS_PUBSUB_NODE_CONFIG)
 				if form:
 					if form.formType != 'submit':
 						raise BadRequest(text=u"Unexpected form type '%s'" %
 											  form.formType)
+				# options without namespace
 				else:
+					form = data_form.findAnyForm(element)
+					
+				if not form:
 					form = data_form.Form('submit',
 										  formNamespace=NS_PUBSUB_NODE_CONFIG)
 				self.options = form
