@@ -404,6 +404,7 @@ class PubSubRequest(generic.Stanza):
 			raise BadRequest(text="Missing configuration form")
 
 
+	# nfvs: added parsing for pubsub#node_type
 	def _parse_configureOrNone(self, verbElement):
 		"""
 		Parse optional node configuration form in create request.
@@ -423,10 +424,16 @@ class PubSubRequest(generic.Stanza):
 				# options without namespace
 				else:
 					form = data_form.findAnyForm(element)
-					
+				
 				if not form:
 					form = data_form.Form('submit',
 										  formNamespace=NS_PUBSUB_NODE_CONFIG)
+				
+				# nfvs: extract node_type from options, set self.node_type
+				if 'pubsub#node_type' in form.fields and form.fields['pubsub#node_type'].values[0] == 'collection':
+					self.node_type = 'collection'
+					del form.fields['pubsub#node_type']
+
 				self.options = form
 
 
@@ -1044,7 +1051,7 @@ class PubSubService(XMPPHandler, IQHandlerMixin):
 										'nodeIdentifier', 'subscriber']),
 		'subscriptions': ('subscriptions', ['sender', 'recipient']),
 		'affiliations': ('affiliations', ['sender', 'recipient']),
-		'create': ('create', ['sender', 'recipient', 'nodeIdentifier', 'options']), # nfvs
+		'create': ('create', ['sender', 'recipient', 'nodeIdentifier', 'nodeType', 'options']), # nfvs
 		'getConfigurationOptions': ('getConfigurationOptions', []),
 		'default': ('getDefaultConfiguration',
 					['sender', 'recipient', 'nodeType']),
@@ -1088,13 +1095,13 @@ class PubSubService(XMPPHandler, IQHandlerMixin):
 				
 				# nfvs: dont add node_type, it should already be
 				# in the metadata
-				# form.addField(
-				# 		data_form.Field(
-				# 			var='pubsub#node_type',
-				# 			value=nodeType,
-				# 			label='The type of node (collection or leaf)'
-				# 		)
-				# )
+				form.addField(
+					data_form.Field(
+						var='pubsub#node_type',
+						value=nodeType,
+						label='The type of node (collection or leaf)'
+					)
+				)
 				for metaDatum in metaData:
 					form.addField(data_form.Field.fromDict(metaDatum))
 
@@ -1181,8 +1188,15 @@ class PubSubService(XMPPHandler, IQHandlerMixin):
 			handlerName, argNames = self._legacyHandlers[request.verb]
 			handler = getattr(self, handlerName)
 			args = [getattr(request, arg) for arg in argNames]
+			# add options argument
 			if 'options' in argNames and request.options:
 				args[argNames.index('options')] = request.options.getValues()
+			# add nodeType argument. default: leaf
+			try:
+				nodeType = getattr(request, 'node_type')
+			except AttributeError:
+				nodeType = 'leaf'
+			args[argNames.index('nodeType')] = nodeType
 			d = handler(*args)
 
 		# If needed, translate the result into a response
@@ -1370,7 +1384,7 @@ class PubSubService(XMPPHandler, IQHandlerMixin):
 		raise Unsupported('retrieve-affiliations')
 
 
-	def create(self, requestor, service, nodeIdentifier, options=None):
+	def create(self, requestor, service, nodeIdentifier, nodeType, options=None):
 		raise Unsupported('create-nodes')
 
 
