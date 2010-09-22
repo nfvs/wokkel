@@ -1051,7 +1051,7 @@ class PubSubService(XMPPHandler, IQHandlerMixin):
 										'nodeIdentifier', 'subscriber']),
 		'subscriptions': ('subscriptions', ['sender', 'recipient']),
 		'affiliations': ('affiliations', ['sender', 'recipient']),
-		'create': ('create', ['sender', 'recipient', 'nodeIdentifier', 'nodeType', 'options']), # nfvs
+		'create': ('create', ['sender', 'recipient', 'nodeIdentifier', 'options']), # nfvs
 		'getConfigurationOptions': ('getConfigurationOptions', []),
 		'default': ('getDefaultConfiguration',
 					['sender', 'recipient', 'nodeType']),
@@ -1191,12 +1191,17 @@ class PubSubService(XMPPHandler, IQHandlerMixin):
 			# add options argument
 			if 'options' in argNames and request.options:
 				args[argNames.index('options')] = request.options.getValues()
+			else:
+				args[argNames.index('options')] = {}
+
 			# add nodeType argument. default: leaf
 			try:
 				nodeType = getattr(request, 'node_type')
 			except AttributeError:
 				nodeType = 'leaf'
-			args[argNames.index('nodeType')] = nodeType
+			
+			#args[argNames.index('nodeType')] = nodeType
+			args[argNames.index('options')]['pubsub#node_type'] = nodeType
 			d = handler(*args)
 
 		# If needed, translate the result into a response
@@ -1384,7 +1389,7 @@ class PubSubService(XMPPHandler, IQHandlerMixin):
 		raise Unsupported('retrieve-affiliations')
 
 
-	def create(self, requestor, service, nodeIdentifier, nodeType, options=None):
+	def create(self, requestor, service, nodeIdentifier, options=None):
 		raise Unsupported('create-nodes')
 
 
