@@ -1191,17 +1191,15 @@ class PubSubService(XMPPHandler, IQHandlerMixin):
 			# add options argument
 			if 'options' in argNames and request.options:
 				args[argNames.index('options')] = request.options.getValues()
-			else:
-				args[argNames.index('options')] = {}
 
-			# add nodeType argument. default: leaf
-			try:
-				nodeType = getattr(request, 'node_type')
-			except AttributeError:
-				nodeType = 'leaf'
-			
-			#args[argNames.index('nodeType')] = nodeType
-			args[argNames.index('options')]['pubsub#node_type'] = nodeType
+				# add nodeType argument. default: leaf
+				try:
+					nodeType = getattr(request, 'node_type')
+				except AttributeError:
+					nodeType = 'leaf'
+				
+				args[argNames.index('options')]['pubsub#node_type'] = nodeType
+
 			d = handler(*args)
 
 		# If needed, translate the result into a response
