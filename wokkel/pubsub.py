@@ -1049,7 +1049,7 @@ class PubSubService(XMPPHandler, IQHandlerMixin):
 									'nodeIdentifier', 'subscriber']),
 		'unsubscribe': ('unsubscribe', ['sender', 'recipient',
 										'nodeIdentifier', 'subscriber']),
-		'subscriptions': ('subscriptions', ['sender', 'recipient']),
+		'subscriptions': ('subscriptions', ['sender', 'recipient', 'options']),
 		'affiliations': ('affiliations', ['sender', 'recipient']),
 		'create': ('create', ['sender', 'recipient', 'nodeIdentifier', 'options']), # nfvs
 		'getConfigurationOptions': ('getConfigurationOptions', []),
@@ -1059,6 +1059,12 @@ class PubSubService(XMPPHandler, IQHandlerMixin):
 											  'nodeIdentifier']),
 		'configureSet': ('setConfiguration', ['sender', 'recipient',
 											  'nodeIdentifier', 'options']),
+		# nfvs
+		'optionsSet': ('setOptions', ['recipient', 'nodeIdentifier', 'subscriber',
+									  'options', 'subscriptionIdentifier', 'sender']),
+		'optionsGet': ('getOptions', ['recipient', 'nodeIdentifier', 'subscriber',
+									  'subscriptionIdentifier', 'sender']),
+		
 		'items': ('items', ['sender', 'recipient', 'nodeIdentifier',
 							'maxItems', 'itemIdentifiers']),
 		'retract': ('retract', ['sender', 'recipient', 'nodeIdentifier',
@@ -1405,6 +1411,14 @@ class PubSubService(XMPPHandler, IQHandlerMixin):
 
 	def setConfiguration(self, requestor, service, nodeIdentifier, options):
 		raise Unsupported('config-node')
+		
+	def setOptions(self, service, nodeIdentifier, subscriber, options,
+				   subscriptionIdentifier=None, sender=None):
+		raise Unsupported('config-subscription')
+
+	def getOptions(self, service, nodeIdentifier, subscriber,
+				   subscriptionIdentifier=None, sender=None):
+		raise Unsupported('config-subscription')
 
 
 	def items(self, requestor, service, nodeIdentifier, maxItems,
