@@ -1046,7 +1046,7 @@ class PubSubService(XMPPHandler, IQHandlerMixin):
 		'publish': ('publish', ['sender', 'recipient',
 								'nodeIdentifier', 'items']),
 		'subscribe': ('subscribe', ['sender', 'recipient',
-									'nodeIdentifier', 'subscriber']),
+									'nodeIdentifier', 'subscriber', 'options']), # nfvs (added options)
 		'unsubscribe': ('unsubscribe', ['sender', 'recipient',
 										'nodeIdentifier', 'subscriber']),
 		'subscriptions': ('subscriptions', ['sender', 'recipient', 'options']),
@@ -1198,13 +1198,14 @@ class PubSubService(XMPPHandler, IQHandlerMixin):
 			if 'options' in argNames and request.options:
 				args[argNames.index('options')] = request.options.getValues()
 
-				# add nodeType argument. default: leaf
-				try:
-					nodeType = getattr(request, 'node_type')
-				except AttributeError:
-					nodeType = 'leaf'
+				# add nodeType argument on create-node default: leaf
+				if request.verb in ['create']:
+					try:
+						nodeType = getattr(request, 'node_type')
+					except AttributeError:
+						nodeType = 'leaf'
 				
-				args[argNames.index('options')]['pubsub#node_type'] = nodeType
+					args[argNames.index('options')]['pubsub#node_type'] = nodeType
 
 			d = handler(*args)
 
@@ -1377,7 +1378,7 @@ class PubSubService(XMPPHandler, IQHandlerMixin):
 		raise Unsupported('publish')
 
 
-	def subscribe(self, requestor, service, nodeIdentifier, subscriber):
+	def subscribe(self, requestor, service, nodeIdentifier, subscriber, options):
 		raise Unsupported('subscribe')
 
 
