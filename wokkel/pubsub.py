@@ -283,14 +283,14 @@ class PubSubRequest(generic.Stanza):
 		'purge': ['node'],
 		'delete': ['node'],
 		'affiliationsGet': ['nodeOrEmpty'],
-		'affiliationsSet': [],
+		'affiliationsSet': ['node', 'affiliations'],
 		'subscriptionsGet': ['nodeOrEmpty'],
 		'subscriptionsSet': [],
 	}
 
 	def __init__(self, verb=None):
 		self.verb = verb
-
+	
 
 	def _parse_node(self, verbElement):
 		"""
@@ -359,6 +359,24 @@ class PubSubRequest(generic.Stanza):
 		if self.items:
 			for item in self.items:
 				verbElement.addChild(item)
+
+	# NFVS
+	def _parse_affiliations(self, verbElement):
+		"""
+		Parse affiliations out of the verbElement.
+		"""
+		self.affiliations = []
+		for element in verbElement.elements():
+			if element.name == 'affiliation':
+				self.affiliations.append(element)
+
+	def _render_affiliations(self, verbElement):
+		"""
+		Render items into the verbElement.
+		"""
+		if self.affiliations:
+			for affiliation in self.affiliations:
+				verbElement.addChild(affiliation)
 
 
 	def _parse_jid(self, verbElement):
@@ -1064,6 +1082,8 @@ class PubSubService(XMPPHandler, IQHandlerMixin):
 									  'options', 'subscriptionIdentifier', 'sender']),
 		'optionsGet': ('getOptions', ['recipient', 'nodeIdentifier', 'subscriber',
 									  'subscriptionIdentifier', 'sender']),
+		'affiliationsSet': ('setAffiliations', ['sender', 'recipient',
+												'nodeIdentifier', 'affiliations']),
 		
 		'items': ('items', ['sender', 'recipient', 'nodeIdentifier',
 							'maxItems', 'itemIdentifiers']),
@@ -1194,11 +1214,12 @@ class PubSubService(XMPPHandler, IQHandlerMixin):
 			handlerName, argNames = self._legacyHandlers[request.verb]
 			handler = getattr(self, handlerName)
 			args = [getattr(request, arg) for arg in argNames]
+			print '- args: %s' % args
 			# add options argument
 			if 'options' in argNames and request.options:
 				args[argNames.index('options')] = request.options.getValues()
 
-				# add nodeType argument on create-node default: leaf
+				# add nodeType argument on create-node. default: leaf
 				if request.verb in ['create']:
 					try:
 						nodeType = getattr(request, 'node_type')
@@ -1421,7 +1442,10 @@ class PubSubService(XMPPHandler, IQHandlerMixin):
 				   subscriptionIdentifier=None, sender=None):
 		raise Unsupported('config-subscription')
 
+	def setAffiliations(self, requestor, service, nodeIdentifier):
+			raise Unsupported('modify-affiliations')
 
+	
 	def items(self, requestor, service, nodeIdentifier, maxItems,
 					itemIdentifiers):
 		raise Unsupported('retrieve-items')
