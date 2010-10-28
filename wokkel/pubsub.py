@@ -1214,7 +1214,7 @@ class PubSubService(XMPPHandler, IQHandlerMixin):
 			handlerName, argNames = self._legacyHandlers[request.verb]
 			handler = getattr(self, handlerName)
 			args = [getattr(request, arg) for arg in argNames]
-			print '- args: %s' % args
+			#print '- args: %s' % args
 			# add options argument
 			if 'options' in argNames and request.options:
 				args[argNames.index('options')] = request.options.getValues()
