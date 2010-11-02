@@ -431,9 +431,10 @@ class Form(object):
 		named fields, that is kept in sync only if this method is used for
 		adding new fields. Multiple fields with the same name are disallowed.
 		"""
+		# FIXME: uncomment!
 		if field.var is not None:
-			if field.var in self.fields:
-				raise Error("Duplicate field %r" % field.var)
+		#	if field.var in self.fields:
+		#		raise Error("Duplicate field %r" % field.var)
 
 			self.fields[field.var] = field
 
