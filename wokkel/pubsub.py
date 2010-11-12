@@ -1067,7 +1067,8 @@ class PubSubService(XMPPHandler, IQHandlerMixin):
 									'nodeIdentifier', 'subscriber', 'options']), # nfvs (added options)
 		'unsubscribe': ('unsubscribe', ['sender', 'recipient',
 										'nodeIdentifier', 'subscriber']),
-		'subscriptions': ('subscriptions', ['sender', 'recipient', 'options']),
+		#'subscriptions': ('subscriptions', ['sender', 'recipient', 'options']),
+		'subscriptions': ('subscriptions', ['sender', 'recipient']),
 		'affiliations': ('affiliations', ['sender', 'recipient']),
 		'create': ('create', ['sender', 'recipient', 'nodeIdentifier', 'options']), # nfvs
 		'getConfigurationOptions': ('getConfigurationOptions', []),
