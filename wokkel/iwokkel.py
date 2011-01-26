@@ -312,7 +312,7 @@ class IPubSubService(Interface):
         @rtype: L{defer.Deferred}
         """
 
-    def subscribe(requestor, service, nodeIdentifier, subscriber):
+    def subscribe(requestor, service, nodeIdentifier, subscriber, options):
         """
         Called when a subscribe request has been received.
 
@@ -324,6 +324,8 @@ class IPubSubService(Interface):
         @type nodeIdentifier: C{unicode}
         @param subscriber: The entity to be subscribed.
         @type subscriber: L{jid.JID}
+        @param options: The subscription options
+        @type subscriber: L{dict}
         @return: A deferred that fires with a
                  L{Subscription<wokkel.pubsub.Subscription>}.
         @rtype: L{defer.Deferred}
