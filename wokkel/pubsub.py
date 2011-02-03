@@ -1083,6 +1083,7 @@ class PubSubService(XMPPHandler, IQHandlerMixin):
 									  'options', 'subscriptionIdentifier', 'sender']),
 		'optionsGet': ('getOptions', ['recipient', 'nodeIdentifier', 'subscriber',
 									  'subscriptionIdentifier', 'sender']),
+		'affiliationsGet': ('getAffiliations', ['sender', 'recipient', 'nodeIdentifier']),
 		'affiliationsSet': ('setAffiliations', ['sender', 'recipient',
 												'nodeIdentifier', 'affiliations']),
 		
@@ -1331,6 +1332,17 @@ class PubSubService(XMPPHandler, IQHandlerMixin):
 			self._checkConfiguration(resource, request.options)
 			return request
 
+	def _toResponse_affiliationsGet(self, result, resource, request):
+		response = domish.Element((NS_PUBSUB, 'pubsub'))
+		affiliations = response.addElement('affiliations')
+
+		for nodeIdentifier, affiliation in result:
+			item = affiliations.addElement('affiliation')
+			item['node'] = nodeIdentifier
+			item['affiliation'] = affiliation
+
+		return response
+
 
 	def _toResponse_items(self, result, resource, request):
 		response = domish.Element((NS_PUBSUB, 'pubsub'))
@@ -1443,8 +1455,11 @@ class PubSubService(XMPPHandler, IQHandlerMixin):
 				   subscriptionIdentifier=None, sender=None):
 		raise Unsupported('config-subscription')
 
+	def getAffiliations(self, requestor, service, nodeIdentifier):
+		raise Unsupported('modify-affiliations')
+
 	def setAffiliations(self, requestor, service, nodeIdentifier):
-			raise Unsupported('modify-affiliations')
+		raise Unsupported('modify-affiliations')
 
 	
 	def items(self, requestor, service, nodeIdentifier, maxItems,
