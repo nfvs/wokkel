@@ -30,6 +30,7 @@ IQ_SET = '/iq[@type="set"]'
 NS_VERSION = 'jabber:iq:version'
 VERSION = IQ_GET + '/query[@xmlns="' + NS_VERSION + '"]'
 
+
 def parseXml(string):
     """
     Parse serialized XML into a DOM structure.
@@ -49,7 +50,6 @@ def parseXml(string):
     return results and results[0] or None
 
 
-
 def stripNamespace(rootElement):
     namespace = rootElement.uri
 
@@ -65,7 +65,6 @@ def stripNamespace(rootElement):
         strip(rootElement)
 
     return rootElement
-
 
 
 class FallbackHandler(XMPPHandler):
@@ -86,7 +85,6 @@ class FallbackHandler(XMPPHandler):
 
         reply = error.StanzaError('service-unavailable')
         self.xmlstream.send(reply.toResponse(iq))
-
 
 
 class VersionHandler(XMPPHandler):
@@ -128,7 +126,6 @@ class VersionHandler(XMPPHandler):
         return defer.succeed([])
 
 
-
 class XmlPipe(object):
     """
     XML stream pipe.
@@ -163,7 +160,6 @@ class XmlPipe(object):
         self.sink.send = lambda obj: self.source.dispatch(obj)
 
 
-
 class Stanza(object):
     """
     Abstract representation of a stanza.
@@ -182,13 +178,11 @@ class Stanza(object):
         self.recipient = recipient
         self.sender = sender
 
-
     @classmethod
     def fromElement(Class, element):
         stanza = Class()
         stanza.parseElement(element)
         return stanza
-
 
     def parseElement(self, element):
         if element.hasAttribute('from'):
@@ -202,7 +196,7 @@ class Stanza(object):
         stripNamespace(element)
         self.element = element
 
-        # accumulate all childHandlers in the class hierarchy of Class 
+        # accumulate all childHandlers in the class hierarchy of Class
         handlers = {}
         reflect.accumulateClassDict(self.__class__, 'childParsers', handlers)
 
@@ -213,7 +207,6 @@ class Stanza(object):
                 pass
             else:
                 getattr(self, handler)(child)
-
 
     def toElement(self):
         element = domish.Element((None, self.stanzaKind))
@@ -226,7 +219,6 @@ class Stanza(object):
         if self.stanzaID:
             element['id'] = self.stanzaID
         return element
-
 
 
 class ErrorStanza(Stanza):
@@ -249,7 +241,6 @@ class DeferredXmlStreamFactory(BootstrapMixin, protocol.ClientFactory):
         self.addBootstrap(xmlstream.STREAM_AUTHD_EVENT, self.deferred.callback)
         self.addBootstrap(xmlstream.INIT_FAILED_EVENT, deferred.errback)
 
-
     def buildProtocol(self, addr):
         """
         Create an instance of XmlStream.
@@ -261,7 +252,6 @@ class DeferredXmlStreamFactory(BootstrapMixin, protocol.ClientFactory):
         xs.factory = self
         self.installBootstraps(xs)
         return xs
-
 
     def clientConnectionFailed(self, connector, reason):
         self.deferred.errback(reason)

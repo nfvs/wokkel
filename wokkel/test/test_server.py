@@ -17,6 +17,7 @@ from wokkel import component, server
 NS_STREAMS = 'http://etherx.jabber.org/streams'
 NS_DIALBACK = "jabber:server:dialback"
 
+
 class GenerateKeyTest(unittest.TestCase):
     """
     Tests for L{server.generateKey}.
@@ -32,7 +33,6 @@ class GenerateKeyTest(unittest.TestCase):
 
         self.assertEqual(key,
             '37c69b1cf07a3f67c04a5ef5902fa5114f2c76fe4a2686482ba5b89323075643')
-
 
 
 class XMPPServerListenAuthenticatorTest(unittest.TestCase):
@@ -54,7 +54,7 @@ class XMPPServerListenAuthenticatorTest(unittest.TestCase):
 
         self.service = MyService()
         self.service.defaultDomain = self.receiving
-        self.service.domains = [self.receiving, 'pubsub.'+self.receiving]
+        self.service.domains = [self.receiving, 'pubsub.' + self.receiving]
         self.service.secret = self.secret
 
         self.authenticator = server.XMPPServerListenAuthenticator(self.service)
@@ -62,14 +62,12 @@ class XMPPServerListenAuthenticatorTest(unittest.TestCase):
         self.xmlstream.send = self.output.append
         self.xmlstream.transport = StringTransport()
 
-
     def test_attributes(self):
         """
         Test attributes of authenticator and stream objects.
         """
         self.assertEqual(self.service, self.authenticator.service)
         self.assertEqual(self.xmlstream.initiating, False)
-
 
     def test_streamStartedVersion0(self):
         """
@@ -83,7 +81,6 @@ class XMPPServerListenAuthenticatorTest(unittest.TestCase):
                            "to='xmpp.example.com'>")
         self.assertEqual((0, 0), self.xmlstream.version)
 
-
     def test_streamStartedVersion1(self):
         """
         The authenticator supports XMPP 1.0 streams.
@@ -96,7 +93,6 @@ class XMPPServerListenAuthenticatorTest(unittest.TestCase):
                            "to='xmpp.example.com' "
                            "version='1.0'>")
         self.assertEqual((1, 0), self.xmlstream.version)
-
 
     def test_streamStartedSID(self):
         """
@@ -113,7 +109,6 @@ class XMPPServerListenAuthenticatorTest(unittest.TestCase):
                            "version='1.0'>")
         self.assertNotIdentical(None, self.xmlstream.sid)
 
-
     def test_streamStartedSentResponseHeader(self):
         """
         A stream header is sent in response to the incoming stream header.
@@ -128,7 +123,6 @@ class XMPPServerListenAuthenticatorTest(unittest.TestCase):
                            "to='xmpp.example.com'>")
         self.assertTrue(self.xmlstream._headerSent)
 
-
     def test_streamStartedNotSentFeatures(self):
         """
         No features are sent in response to an XMPP < 1.0 stream header.
@@ -140,7 +134,6 @@ class XMPPServerListenAuthenticatorTest(unittest.TestCase):
                            "xmlns='jabber:server' "
                            "to='xmpp.example.com'>")
         self.assertEqual(1, len(self.output))
-
 
     def test_streamStartedSentFeatures(self):
         """
@@ -158,7 +151,6 @@ class XMPPServerListenAuthenticatorTest(unittest.TestCase):
         self.assertEqual(NS_STREAMS, features.uri)
         self.assertEqual('features', features.name)
 
-
     def test_streamRootElement(self):
         """
         Test stream error on wrong stream namespace.
@@ -173,7 +165,6 @@ class XMPPServerListenAuthenticatorTest(unittest.TestCase):
         self.assertEqual(3, len(self.output))
         exc = error.exceptionFromStreamError(self.output[1])
         self.assertEqual('invalid-namespace', exc.condition)
-
 
     def test_streamDefaultNamespace(self):
         """
@@ -190,7 +181,6 @@ class XMPPServerListenAuthenticatorTest(unittest.TestCase):
         exc = error.exceptionFromStreamError(self.output[1])
         self.assertEqual('invalid-namespace', exc.condition)
 
-
     def test_streamNoDialbackNamespace(self):
         """
         Test stream error on missing dialback namespace.
@@ -204,7 +194,6 @@ class XMPPServerListenAuthenticatorTest(unittest.TestCase):
         self.assertEqual(3, len(self.output))
         exc = error.exceptionFromStreamError(self.output[1])
         self.assertEqual('invalid-namespace', exc.condition)
-
 
     def test_streamBadDialbackNamespace(self):
         """
@@ -221,7 +210,6 @@ class XMPPServerListenAuthenticatorTest(unittest.TestCase):
         exc = error.exceptionFromStreamError(self.output[1])
         self.assertEqual('invalid-namespace', exc.condition)
 
-
     def test_streamToUnknownHost(self):
         """
         Test stream error on stream's to attribute having unknown host.
@@ -236,7 +224,6 @@ class XMPPServerListenAuthenticatorTest(unittest.TestCase):
         self.assertEqual(3, len(self.output))
         exc = error.exceptionFromStreamError(self.output[1])
         self.assertEqual('host-unknown', exc.condition)
-
 
     def test_streamToOtherLocalHost(self):
         """
@@ -281,7 +268,6 @@ class XMPPServerListenAuthenticatorTest(unittest.TestCase):
         d.addCallback(cb)
         return d
 
-
     def test_onResultFailure(self):
         class TestError(Exception):
             pass
@@ -290,7 +276,6 @@ class XMPPServerListenAuthenticatorTest(unittest.TestCase):
             reply = self.output[0]
             self.assertEqual('invalid', reply['type'])
             self.assertEqual(1, len(self.flushLoggedErrors(TestError)))
-
 
         def validateConnection(thisHost, otherHost, sid, key):
             return defer.fail(TestError())
@@ -308,7 +293,6 @@ class XMPPServerListenAuthenticatorTest(unittest.TestCase):
         return d
 
 
-
 class FakeService(object):
     domains = set(['example.org', 'pubsub.example.org'])
     defaultDomain = 'example.org'
@@ -319,7 +303,6 @@ class FakeService(object):
 
     def dispatch(self, xs, element):
         self.dispatched.append(element)
-
 
 
 class XMPPS2SServerFactoryTest(unittest.TestCase):
@@ -335,7 +318,6 @@ class XMPPS2SServerFactoryTest(unittest.TestCase):
         self.xmlstream.thisEntity = jid.JID('example.org')
         self.xmlstream.otherEntity = jid.JID('example.com')
 
-
     def test_makeConnection(self):
         """
         A new connection increases the stream serial count. No logs by default.
@@ -346,7 +328,6 @@ class XMPPS2SServerFactoryTest(unittest.TestCase):
         self.assertIdentical(None, self.xmlstream.rawDataInFn)
         self.assertIdentical(None, self.xmlstream.rawDataOutFn)
 
-
     def test_makeConnectionLogTraffic(self):
         """
         Setting logTraffic should set up raw data loggers.
@@ -355,7 +336,6 @@ class XMPPS2SServerFactoryTest(unittest.TestCase):
         self.xmlstream.makeConnection(self.transport)
         self.assertNotIdentical(None, self.xmlstream.rawDataInFn)
         self.assertNotIdentical(None, self.xmlstream.rawDataOutFn)
-
 
     def test_onError(self):
         """
@@ -370,13 +350,11 @@ class XMPPS2SServerFactoryTest(unittest.TestCase):
         self.xmlstream.dispatch(reason, xmlstream.STREAM_ERROR_EVENT)
         self.assertEqual(1, len(self.flushLoggedErrors(TestError)))
 
-
     def test_connectionInitialized(self):
         """
         """
         self.xmlstream.makeConnection(self.transport)
         self.xmlstream.dispatch(self.xmlstream, xmlstream.STREAM_AUTHD_EVENT)
-
 
     def test_connectionLost(self):
         """
@@ -384,7 +362,6 @@ class XMPPS2SServerFactoryTest(unittest.TestCase):
         self.xmlstream.makeConnection(self.transport)
         self.xmlstream.dispatch(self.xmlstream, xmlstream.STREAM_AUTHD_EVENT)
         self.xmlstream.dispatch(None, xmlstream.STREAM_END_EVENT)
-
 
     def test_Element(self):
         self.xmlstream.makeConnection(self.transport)
@@ -395,14 +372,12 @@ class XMPPS2SServerFactoryTest(unittest.TestCase):
         self.assertEqual(1, len(self.service.dispatched))
         self.assertIdentical(stanza, self.service.dispatched[-1])
 
-
     def test_ElementNotAuthenticated(self):
         self.xmlstream.makeConnection(self.transport)
 
         stanza = domish.Element((None, "presence"))
         self.xmlstream.dispatch(stanza)
         self.assertEqual(0, len(self.service.dispatched))
-
 
 
 class ServerServiceTest(unittest.TestCase):
@@ -421,13 +396,11 @@ class ServerServiceTest(unittest.TestCase):
                                             domain='example.org')
         self.service.xmlstream = self.xmlstream
 
-
     def test_defaultDomainInDomains(self):
         """
         The default domain is part of the domains considered local.
         """
         self.assertIn(self.service.defaultDomain, self.service.domains)
-
 
     def test_dispatch(self):
         stanza = domish.Element((None, "presence"))
@@ -437,7 +410,6 @@ class ServerServiceTest(unittest.TestCase):
 
         self.assertEqual(1, len(self.output))
         self.assertIdentical(stanza, self.output[-1])
-
 
     def test_dispatchNoTo(self):
         errors = []

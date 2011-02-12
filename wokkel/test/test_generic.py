@@ -13,6 +13,7 @@ from wokkel.test.helpers import XmlStreamStub
 
 NS_VERSION = 'jabber:iq:version'
 
+
 class VersionHandlerTest(unittest.TestCase):
     """
     Tests for L{wokkel.generic.VersionHandler}.
@@ -50,7 +51,6 @@ class VersionHandlerTest(unittest.TestCase):
         self.assertEquals('0.1.0', unicode(elements[0]))
 
 
-
 class XmlPipeTest(unittest.TestCase):
     """
     Tests for L{wokkel.generic.XmlPipe}.
@@ -58,7 +58,6 @@ class XmlPipeTest(unittest.TestCase):
 
     def setUp(self):
         self.pipe = generic.XmlPipe()
-
 
     def test_sendFromSource(self):
         """
@@ -72,7 +71,6 @@ class XmlPipeTest(unittest.TestCase):
         element = domish.Element(('testns', 'test'))
         self.pipe.source.send(element)
         self.assertEquals([element], called)
-
 
     def test_sendFromSink(self):
         """

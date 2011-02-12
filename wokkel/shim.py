@@ -14,11 +14,13 @@ from twisted.words.xish import domish
 
 NS_SHIM = "http://jabber.org/protocol/shim"
 
+
 class Headers(domish.Element):
     def __init__(self, headers):
         domish.Element.__init__(self, (NS_SHIM, 'headers'))
         for name, value in headers:
             self.addElement('header', content=value)['name'] = name
+
 
 def extractHeaders(stanza):
     """

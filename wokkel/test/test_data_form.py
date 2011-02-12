@@ -13,6 +13,7 @@ from wokkel import data_form
 
 NS_X_DATA = 'jabber:x:data'
 
+
 class OptionTest(unittest.TestCase):
     """
     Tests for L{data_form.Option}.
@@ -20,7 +21,7 @@ class OptionTest(unittest.TestCase):
 
     def test_toElement(self):
         """
-        An option is an option element with a value child with the option value.
+        An option is an option element with a value child with the option value
         """
         option = data_form.Option('value')
         element = option.toElement()
@@ -30,7 +31,6 @@ class OptionTest(unittest.TestCase):
         self.assertEqual(NS_X_DATA, element.value.uri)
         self.assertEqual('value', unicode(element.value))
         self.assertFalse(element.hasAttribute('label'))
-
 
     def test_toElementLabel(self):
         """
@@ -45,7 +45,6 @@ class OptionTest(unittest.TestCase):
         self.assertEqual('value', unicode(element.value))
         self.assertEqual('label', element['label'])
 
-
     def test_fromElement(self):
         """
         An option has a child element with the option value.
@@ -56,7 +55,6 @@ class OptionTest(unittest.TestCase):
 
         self.assertEqual('value', option.value)
         self.assertIdentical(None, option.label)
-
 
     def test_fromElementLabel(self):
         """
@@ -70,7 +68,6 @@ class OptionTest(unittest.TestCase):
 
         self.assertEqual('label', option.label)
 
-
     def test_fromElementNoValue(self):
         """
         An option MUST have a value.
@@ -79,14 +76,12 @@ class OptionTest(unittest.TestCase):
         self.assertRaises(data_form.Error,
                           data_form.Option.fromElement, element)
 
-
     def test_repr(self):
         """
         The representation of an Option is equal to how it is created.
         """
         option = data_form.Option('value', 'label')
         self.assertEqual("""Option('value', 'label')""", repr(option))
-
 
 
 class FieldTest(unittest.TestCase):
@@ -102,7 +97,6 @@ class FieldTest(unittest.TestCase):
         self.assertEqual('text-single', field.fieldType)
         self.assertEqual('test', field.var)
 
-
     def test_labelAndOptions(self):
         """
         The label should be set, even if there are options with labels as dict.
@@ -110,7 +104,6 @@ class FieldTest(unittest.TestCase):
         field = data_form.Field(label='test',
                                 options={'test2': 'test 2', 'test3': 'test 3'})
         self.assertEqual('test', field.label)
-
 
     def test_repr(self):
         """
@@ -125,7 +118,6 @@ class FieldTest(unittest.TestCase):
                          """values=['test'], """
                          """options=[Option('test')])""",
                          repr(field))
-
 
     def test_toElement(self):
         """
@@ -142,7 +134,6 @@ class FieldTest(unittest.TestCase):
         self.assertEquals('test', element['var'])
         self.assertEquals([], element.children)
 
-
     def test_toElementTypeNotTextSingle(self):
         """
         Always render the field type, if different from text-single.
@@ -151,7 +142,6 @@ class FieldTest(unittest.TestCase):
         element = field.toElement()
 
         self.assertEquals('hidden', element.getAttribute('type'))
-
 
     def test_toElementSingleValue(self):
         """
@@ -162,7 +152,6 @@ class FieldTest(unittest.TestCase):
 
         children = list(element.elements())
         self.assertEqual(1, len(children))
-
 
     def test_toElementMultipleValues(self):
         """
@@ -175,7 +164,6 @@ class FieldTest(unittest.TestCase):
         children = list(element.elements())
         self.assertEqual(2, len(children))
 
-
     def test_toElementAsForm(self):
         """
         Always render the field type, if asForm is True.
@@ -184,7 +172,6 @@ class FieldTest(unittest.TestCase):
         element = field.toElement(True)
 
         self.assertEquals('text-single', element.getAttribute('type'))
-
 
     def test_toElementOptions(self):
         """
@@ -197,7 +184,6 @@ class FieldTest(unittest.TestCase):
 
         self.assertEqual(2, len(element.children))
 
-
     def test_toElementLabel(self):
         """
         Test rendering to a DOM with a label.
@@ -206,7 +192,6 @@ class FieldTest(unittest.TestCase):
         element = field.toElement(True)
 
         self.assertEqual(u'my label', element.getAttribute('label'))
-
 
     def test_toElementDescription(self):
         """
@@ -221,7 +206,6 @@ class FieldTest(unittest.TestCase):
         self.assertEqual(NS_X_DATA, child.uri)
         self.assertEqual(u'My desc', unicode(child))
 
-
     def test_toElementRequired(self):
         """
         Test rendering to a DOM with options.
@@ -234,7 +218,6 @@ class FieldTest(unittest.TestCase):
         self.assertEqual('required', child.name)
         self.assertEqual(NS_X_DATA, child.uri)
 
-
     def test_toElementJID(self):
         """
         A JID value should render to text.
@@ -243,7 +226,6 @@ class FieldTest(unittest.TestCase):
                                 value=jid.JID(u'test@example.org'))
         element = field.toElement()
         self.assertEqual(u'test@example.org', unicode(element.value))
-
 
     def test_toElementJIDTextSingle(self):
         """
@@ -254,7 +236,6 @@ class FieldTest(unittest.TestCase):
         element = field.toElement()
         self.assertEqual(u'test@example.org', unicode(element.value))
 
-
     def test_toElementBoolean(self):
         """
         A boolean value should render to text.
@@ -264,7 +245,6 @@ class FieldTest(unittest.TestCase):
         element = field.toElement()
         self.assertEqual(u'true', unicode(element.value))
 
-
     def test_toElementBooleanTextSingle(self):
         """
         A boolean value should render to text if the field type is text-single.
@@ -273,7 +253,6 @@ class FieldTest(unittest.TestCase):
         element = field.toElement()
         self.assertEqual(u'true', unicode(element.value))
 
-
     def test_toElementNoType(self):
         """
         A field with no type should not have a type attribute.
@@ -281,7 +260,6 @@ class FieldTest(unittest.TestCase):
         field = data_form.Field(None, var='test', value='test')
         element = field.toElement()
         self.assertFalse(element.hasAttribute('type'))
-
 
     def test_toElementNoTypeMultipleValues(self):
         """
@@ -294,14 +272,12 @@ class FieldTest(unittest.TestCase):
         children = list(element.elements())
         self.assertEqual(2, len(children))
 
-
     def test_typeCheckNoFieldName(self):
         """
         A field not of type fixed must have a var.
         """
         field = data_form.Field(fieldType='list-single')
         self.assertRaises(data_form.FieldNameRequiredError, field.typeCheck)
-
 
     def test_typeCheckTooManyValues(self):
         """
@@ -310,7 +286,6 @@ class FieldTest(unittest.TestCase):
         field = data_form.Field(fieldType='list-single', var='test',
                                 values=[u'value1', u'value2'])
         self.assertRaises(data_form.TooManyValuesError, field.typeCheck)
-
 
     def test_typeCheckBooleanFalse(self):
         """
@@ -324,7 +299,6 @@ class FieldTest(unittest.TestCase):
             self.assertIsInstance(field.value, bool)
             self.assertFalse(field.value)
 
-
     def test_typeCheckBooleanTrue(self):
         """
         Test possible True values for a boolean field.
@@ -337,7 +311,6 @@ class FieldTest(unittest.TestCase):
             self.assertIsInstance(field.value, bool)
             self.assertTrue(field.value)
 
-
     def test_typeCheckBooleanBad(self):
         """
         A bad value for a boolean field should raise a ValueError
@@ -346,7 +319,6 @@ class FieldTest(unittest.TestCase):
         field.value = 'test'
         self.assertRaises(ValueError, field.typeCheck)
 
-
     def test_typeCheckJID(self):
         """
         The value of jid field should be a JID or coercable to one.
@@ -354,7 +326,6 @@ class FieldTest(unittest.TestCase):
         field = data_form.Field(fieldType='jid-single', var='test',
                                 value=jid.JID('test@example.org'))
         field.typeCheck()
-
 
     def test_typeCheckJIDString(self):
         """
@@ -365,7 +336,6 @@ class FieldTest(unittest.TestCase):
         field.typeCheck()
         self.assertEquals(jid.JID(u'test@example.org'), field.value)
 
-
     def test_typeCheckJIDBad(self):
         """
         An invalid JID string should raise an exception.
@@ -374,19 +344,16 @@ class FieldTest(unittest.TestCase):
                                 value='test@@example.org')
         self.assertRaises(jid.InvalidFormat, field.typeCheck)
 
-
     def test_fromElementType(self):
         element = domish.Element((NS_X_DATA, 'field'))
         element['type'] = 'fixed'
         field = data_form.Field.fromElement(element)
         self.assertEquals('fixed', field.fieldType)
 
-
     def test_fromElementNoType(self):
         element = domish.Element((NS_X_DATA, 'field'))
         field = data_form.Field.fromElement(element)
         self.assertEquals(None, field.fieldType)
-
 
     def test_fromElementValueTextSingle(self):
         """
@@ -398,7 +365,6 @@ class FieldTest(unittest.TestCase):
         field = data_form.Field.fromElement(element)
         self.assertEquals('text', field.value)
 
-
     def test_fromElementValueJID(self):
         """
         Parsed jid-single field values should be of type C{unicode}.
@@ -408,7 +374,6 @@ class FieldTest(unittest.TestCase):
         element.addElement('value', content=u'user@example.org')
         field = data_form.Field.fromElement(element)
         self.assertEquals(u'user@example.org', field.value)
-
 
     def test_fromElementValueJIDMalformed(self):
         """
@@ -423,7 +388,6 @@ class FieldTest(unittest.TestCase):
         field = data_form.Field.fromElement(element)
         self.assertEquals(u'@@', field.value)
 
-
     def test_fromElementValueBoolean(self):
         """
         Parsed boolean field values should be of type C{unicode}.
@@ -434,7 +398,6 @@ class FieldTest(unittest.TestCase):
         field = data_form.Field.fromElement(element)
         self.assertEquals(u'false', field.value)
 
-
     def test_fromElementDesc(self):
         """
         Field descriptions are in a desc child element.
@@ -443,7 +406,6 @@ class FieldTest(unittest.TestCase):
         element.addElement('desc', content=u'My description')
         field = data_form.Field.fromElement(element)
         self.assertEqual(u'My description', field.desc)
-
 
     def test_fromElementOption(self):
         """
@@ -455,7 +417,6 @@ class FieldTest(unittest.TestCase):
         field = data_form.Field.fromElement(element)
         self.assertEqual(2, len(field.options))
 
-
     def test_fromElementRequired(self):
         """
         Required fields have a required child element.
@@ -464,7 +425,6 @@ class FieldTest(unittest.TestCase):
         element.addElement('required')
         field = data_form.Field.fromElement(element)
         self.assertTrue(field.required)
-
 
     def test_fromElementChildOtherNamespace(self):
         """
@@ -477,7 +437,6 @@ class FieldTest(unittest.TestCase):
 
         self.assertIdentical(None, field.value)
 
-
     def test_fromDict(self):
         """
         A named field with a value can be created by providing a dictionary.
@@ -487,7 +446,6 @@ class FieldTest(unittest.TestCase):
         self.assertEqual('test', field.var)
         self.assertEqual('text', field.value)
 
-
     def test_fromDictFieldType(self):
         """
         The field type is set using the key 'type'.
@@ -495,7 +453,6 @@ class FieldTest(unittest.TestCase):
         fieldDict = {'type': 'boolean'}
         field = data_form.Field.fromDict(fieldDict)
         self.assertEqual('boolean', field.fieldType)
-
 
     def test_fromDictOptions(self):
         """
@@ -528,7 +485,6 @@ class FormTest(unittest.TestCase):
         form = data_form.Form('result')
         self.assertEqual('result', form.formType)
 
-
     def test_toElement(self):
         """
         The toElement method returns a form's DOM representation.
@@ -541,7 +497,6 @@ class FormTest(unittest.TestCase):
         self.assertEquals(NS_X_DATA, element.uri)
         self.assertEquals('result', element['type'])
         self.assertEquals([], element.children)
-
 
     def test_toElementTitle(self):
         """
@@ -557,7 +512,6 @@ class FormTest(unittest.TestCase):
         self.assertEqual(NS_X_DATA, title.uri)
         self.assertEqual('Bot configuration', unicode(title))
 
-
     def test_toElementInstructions(self):
         """
         Instructions are rendered as child elements with CDATA.
@@ -571,7 +525,6 @@ class FormTest(unittest.TestCase):
         self.assertEqual('instructions', instructions.name)
         self.assertEqual(NS_X_DATA, instructions.uri)
         self.assertEqual('Fill out this form!', unicode(instructions))
-
 
     def test_toElementInstructionsMultiple(self):
         """
@@ -592,7 +545,6 @@ class FormTest(unittest.TestCase):
         self.assertEqual(NS_X_DATA, instructions2.uri)
         self.assertEqual('no really', unicode(instructions2))
 
-
     def test_toElementFormType(self):
         """
         The form type is rendered as a hidden field with name FORM_TYPE.
@@ -608,7 +560,6 @@ class FormTest(unittest.TestCase):
         self.assertEqual('FORM_TYPE', formTypeField['var'])
         self.assertEqual('hidden', formTypeField['type'])
         self.assertEqual('jabber:bot', unicode(formTypeField.value))
-
 
     def test_toElementFields(self):
         """
@@ -641,7 +592,6 @@ class FormTest(unittest.TestCase):
         self.assertEqual('description', elements[2]['var'])
         self.assertEqual('public', elements[3]['var'])
 
-
     def test_fromElement(self):
         """
         C{fromElement} creates a L{data_form.Form} from a DOM representation.
@@ -655,14 +605,12 @@ class FormTest(unittest.TestCase):
         self.assertEquals([], form.instructions)
         self.assertEquals({}, form.fields)
 
-
     def test_fromElementInvalidElementName(self):
         """
         Bail if the passed element does not have the correct name.
         """
         element = domish.Element((NS_X_DATA, 'form'))
         self.assertRaises(Exception, data_form.Form.fromElement, element)
-
 
     def test_fromElementInvalidElementURI(self):
         """
@@ -671,14 +619,12 @@ class FormTest(unittest.TestCase):
         element = domish.Element(('myns', 'x'))
         self.assertRaises(Exception, data_form.Form.fromElement, element)
 
-
     def test_fromElementTitle(self):
         element = domish.Element((NS_X_DATA, 'x'))
         element.addElement('title', content='My title')
         form = data_form.Form.fromElement(element)
 
         self.assertEquals('My title', form.title)
-
 
     def test_fromElementInstructions(self):
         element = domish.Element((NS_X_DATA, 'x'))
@@ -687,15 +633,14 @@ class FormTest(unittest.TestCase):
 
         self.assertEquals(['instruction'], form.instructions)
 
-
     def test_fromElementInstructions2(self):
         element = domish.Element((NS_X_DATA, 'x'))
         element.addElement('instructions', content='instruction 1')
         element.addElement('instructions', content='instruction 2')
         form = data_form.Form.fromElement(element)
 
-        self.assertEquals(['instruction 1', 'instruction 2'], form.instructions)
-
+        self.assertEquals(['instruction 1', 'instruction 2'],
+                          form.instructions)
 
     def test_fromElementOneField(self):
         element = domish.Element((NS_X_DATA, 'x'))
@@ -704,7 +649,6 @@ class FormTest(unittest.TestCase):
 
         self.assertEquals(1, len(form.fieldList))
         self.assertNotIn('field', form.fields)
-
 
     def test_fromElementTwoFields(self):
         element = domish.Element((NS_X_DATA, 'x'))
@@ -717,7 +661,6 @@ class FormTest(unittest.TestCase):
         self.assertEquals('field1', form.fieldList[0].var)
         self.assertIn('field2', form.fields)
         self.assertEquals('field2', form.fieldList[1].var)
-
 
     def test_fromElementFormType(self):
         """
@@ -746,7 +689,6 @@ class FormTest(unittest.TestCase):
         self.assertIn('FORM_TYPE', form.fields)
         self.assertIdentical(None, form.formNamespace)
 
-
     def test_fromElementChildOtherNamespace(self):
         """
         Child elements from another namespace are ignored.
@@ -758,7 +700,6 @@ class FormTest(unittest.TestCase):
         form = data_form.Form.fromElement(element)
 
         self.assertEqual(0, len(form.fields))
-
 
     def test_repr(self):
         """
@@ -774,7 +715,6 @@ class FormTest(unittest.TestCase):
                          """values=['test'])])""",
                          repr(form))
 
-
     def test_addField(self):
         """
         A field should occur in fieldList.
@@ -783,7 +723,6 @@ class FormTest(unittest.TestCase):
         field = data_form.Field('fixed', value='Section 1')
         form.addField(field)
         self.assertEqual([field], form.fieldList)
-
 
     def test_addFieldTwice(self):
         """
@@ -796,7 +735,6 @@ class FormTest(unittest.TestCase):
         form.addField(field2)
         self.assertEqual([field1, field2], form.fieldList)
 
-
     def test_addFieldNotNamed(self):
         """
         A non-named field should not occur in fields.
@@ -806,7 +744,6 @@ class FormTest(unittest.TestCase):
         form.addField(field)
         self.assertEqual({}, form.fields)
 
-
     def test_addFieldNamed(self):
         """
         A named field should occur in fields.
@@ -815,7 +752,6 @@ class FormTest(unittest.TestCase):
         field = data_form.Field(var='test')
         form.addField(field)
         self.assertEqual({'test': field}, form.fields)
-
 
     def test_addFieldTwiceNamed(self):
         """
@@ -828,7 +764,6 @@ class FormTest(unittest.TestCase):
         form.addField(field1)
         self.assertEqual({'test': field1, 'test2': field2}, form.fields)
 
-
     def test_addFieldSameName(self):
         """
         A named field cannot occur twice.
@@ -838,7 +773,6 @@ class FormTest(unittest.TestCase):
         field2 = data_form.Field(var='test', value='value2')
         form.addField(field1)
         self.assertRaises(data_form.Error, form.addField, field2)
-
 
     def test_removeField(self):
         """
@@ -850,7 +784,6 @@ class FormTest(unittest.TestCase):
         form.removeField(field)
         self.assertNotIn(field, form.fieldList)
 
-
     def test_removeFieldNamed(self):
         """
         A removed named field should not occur in fields.
@@ -860,7 +793,6 @@ class FormTest(unittest.TestCase):
         form.addField(field)
         form.removeField(field)
         self.assertNotIn('test', form.fields)
-
 
     def test_makeField(self):
         """
@@ -915,7 +847,6 @@ class FormTest(unittest.TestCase):
         self.assertEqual(True,
                          form.fields['pubsub#persist_items'].value)
 
-
     def test_makeFieldNotFilterUnknown(self):
         """
         Fields can be created from a dict of values and a dict of field defs.
@@ -934,7 +865,6 @@ class FormTest(unittest.TestCase):
         self.assertEqual(None, field.fieldType)
         self.assertEqual(values, form.getValues())
 
-
     def test_makeFieldsUnknownTypeJID(self):
         """
         Without type, a single JID value sets field type jid-single.
@@ -946,7 +876,6 @@ class FormTest(unittest.TestCase):
         field = form.fields['pubsub#creator']
         self.assertEqual(None, field.fieldType)
         self.assertEqual(values, form.getValues())
-
 
     def test_makeFieldsUnknownTypeJIDMulti(self):
         """
@@ -961,7 +890,6 @@ class FormTest(unittest.TestCase):
         self.assertEqual(None, field.fieldType)
         self.assertEqual(values, form.getValues())
 
-
     def test_makeFieldsUnknownTypeBoolean(self):
         """
         Without type, a boolean value sets field type boolean.
@@ -974,7 +902,6 @@ class FormTest(unittest.TestCase):
         self.assertEqual(None, field.fieldType)
         self.assertEqual(values, form.getValues())
 
-
     def test_makeFieldsUnknownTypeListMulti(self):
         """
         Without type, multiple values sets field type list-multi.
@@ -986,7 +913,6 @@ class FormTest(unittest.TestCase):
         field = form.fields['pubsub#show-values']
         self.assertEqual(None, field.fieldType)
         self.assertEqual(values, form.getValues())
-
 
     def test_getValues(self):
         """
@@ -1003,7 +929,6 @@ class FormTest(unittest.TestCase):
                           'features': ['news', 'search']},
                          values)
 
-
     def test_getValuesOneValueTypeMulti(self):
         """
         A single value for a multi-value field type is returned in a list.
@@ -1013,7 +938,6 @@ class FormTest(unittest.TestCase):
         form = data_form.Form('submit', fields=fields)
         values = form.getValues()
         self.assertEqual({'features': ['news']}, values)
-
 
     def test_getValuesMultipleValuesNoType(self):
         """
@@ -1025,7 +949,6 @@ class FormTest(unittest.TestCase):
         values = form.getValues()
         self.assertEqual({'features': ['news', 'search']}, values)
 
-
     def test_getValuesMultipleValuesTypeSingle(self):
         """
         Multiple values for a single-value field type returns the first value.
@@ -1035,7 +958,6 @@ class FormTest(unittest.TestCase):
         form = data_form.Form('submit', fields=fields)
         values = form.getValues()
         self.assertEqual({'features': 'news'}, values)
-
 
     def test_typeCheckKnownFieldChecked(self):
         """
@@ -1049,11 +971,10 @@ class FormTest(unittest.TestCase):
         form.addField(data_form.Field(var='pubsub#description',
                                       value='a node'))
         field = form.fields['pubsub#description']
-        field.typeCheck = lambda : checked.append(None)
+        field.typeCheck = lambda: checked.append(None)
         form.typeCheck(fieldDefs)
 
         self.assertEqual([None], checked)
-
 
     def test_typeCheckKnownFieldNoType(self):
         """
@@ -1067,12 +988,11 @@ class FormTest(unittest.TestCase):
         form.addField(data_form.Field(None, var='pubsub#description',
                                             value='a node'))
         field = form.fields['pubsub#description']
-        field.typeCheck = lambda : checked.append(None)
+        field.typeCheck = lambda: checked.append(None)
         form.typeCheck(fieldDefs)
 
         self.assertEqual('text-single', field.fieldType)
         self.assertEqual([None], checked)
-
 
     def test_typeCheckWrongFieldType(self):
         """
@@ -1086,11 +1006,10 @@ class FormTest(unittest.TestCase):
         form.addField(data_form.Field('list-single', var='pubsub#description',
                                                      value='a node'))
         field = form.fields['pubsub#description']
-        field.typeCheck = lambda : checked.append(None)
+        field.typeCheck = lambda: checked.append(None)
 
         self.assertRaises(TypeError, form.typeCheck, fieldDefs)
         self.assertEqual([], checked)
-
 
     def test_typeCheckDefaultTextSingle(self):
         """
@@ -1103,11 +1022,10 @@ class FormTest(unittest.TestCase):
         form.addField(data_form.Field('text-single', var='pubsub#description',
                                                      value='a node'))
         field = form.fields['pubsub#description']
-        field.typeCheck = lambda : checked.append(None)
+        field.typeCheck = lambda: checked.append(None)
         form.typeCheck(fieldDefs)
 
         self.assertEqual([None], checked)
-
 
     def test_typeCheckUnknown(self):
         """
@@ -1119,12 +1037,11 @@ class FormTest(unittest.TestCase):
         form.addField(data_form.Field('list-single', var='pubsub#description',
                                                      value='a node'))
         field = form.fields['pubsub#description']
-        field.typeCheck = lambda : checked.append(None)
+        field.typeCheck = lambda: checked.append(None)
         form.typeCheck(fieldDefs, filterUnknown=False)
 
         self.assertIn('pubsub#description', form.fields)
         self.assertEqual([None], checked)
-
 
     def test_typeCheckUnknownNoType(self):
         """
@@ -1136,12 +1053,11 @@ class FormTest(unittest.TestCase):
         form.addField(data_form.Field(None, var='pubsub#description',
                                             value='a node'))
         field = form.fields['pubsub#description']
-        field.typeCheck = lambda : checked.append(None)
+        field.typeCheck = lambda: checked.append(None)
         form.typeCheck(fieldDefs, filterUnknown=False)
 
         self.assertIn('pubsub#description', form.fields)
         self.assertEqual([], checked)
-
 
     def test_typeCheckUnknownRemoved(self):
         """
@@ -1153,12 +1069,11 @@ class FormTest(unittest.TestCase):
         form.addField(data_form.Field('list-single', var='pubsub#description',
                                                      value='a node'))
         field = form.fields['pubsub#description']
-        field.typeCheck = lambda : checked.append(None)
+        field.typeCheck = lambda: checked.append(None)
         form.typeCheck(fieldDefs, filterUnknown=True)
 
         self.assertNotIn('pubsub#description', form.fields)
         self.assertEqual([], checked)
-
 
 
 class FindFormTest(unittest.TestCase):
@@ -1173,14 +1088,12 @@ class FindFormTest(unittest.TestCase):
         form = data_form.findForm(element, 'myns')
         self.assertEqual('myns', form.formNamespace)
 
-
     def test_noFormType(self):
         element = domish.Element((None, 'test'))
         otherForm = data_form.Form('submit')
         element.addChild(otherForm.toElement())
         form = data_form.findForm(element, 'myns')
         self.assertIdentical(None, form)
-
 
     def test_noFormTypeCancel(self):
         """
@@ -1192,7 +1105,6 @@ class FindFormTest(unittest.TestCase):
         form = data_form.findForm(element, 'myns')
         self.assertEqual('cancel', form.formType)
 
-
     def test_otherFormType(self):
         """
         Forms with other FORM_TYPEs are ignored.
@@ -1202,7 +1114,6 @@ class FindFormTest(unittest.TestCase):
         element.addChild(otherForm.toElement())
         form = data_form.findForm(element, 'myns')
         self.assertIdentical(None, form)
-
 
     def test_otherFormTypeCancel(self):
         """
@@ -1214,7 +1125,6 @@ class FindFormTest(unittest.TestCase):
         form = data_form.findForm(element, 'myns')
         self.assertIdentical(None, form)
 
-
     def test_noElement(self):
         """
         When None is passed as element, None is returned.
@@ -1223,7 +1133,6 @@ class FindFormTest(unittest.TestCase):
         form = data_form.findForm(element, 'myns')
         self.assertIdentical(None, form)
 
-
     def test_noForm(self):
         """
         When no child element is a form, None is returned.
@@ -1231,6 +1140,7 @@ class FindFormTest(unittest.TestCase):
         element = domish.Element((None, 'test'))
         form = data_form.findForm(element, 'myns')
         self.assertIdentical(None, form)
+
     def test_typeCheckNoFieldDefs(self):
         """
         If there are no field defs, an empty dictionary is assumed.
@@ -1240,7 +1150,7 @@ class FindFormTest(unittest.TestCase):
         form.addField(data_form.Field('list-single', var='pubsub#description',
                                                      value='a node'))
         field = form.fields['pubsub#description']
-        field.typeCheck = lambda : checked.append(None)
+        field.typeCheck = lambda: checked.append(None)
         form.typeCheck()
 
         self.assertIn('pubsub#description', form.fields)

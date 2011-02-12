@@ -15,6 +15,7 @@ from twisted.words.protocols.jabber import error, xmlstream
 
 from wokkel import iwokkel, subprotocols
 
+
 class DummyFactory(object):
     """
     Dummy XmlStream factory that only registers bootstrap observers.
@@ -22,10 +23,8 @@ class DummyFactory(object):
     def __init__(self):
         self.callbacks = {}
 
-
     def addBootstrap(self, event, callback):
         self.callbacks[event] = callback
-
 
 
 class DummyXMPPHandler(subprotocols.XMPPHandler):
@@ -37,22 +36,17 @@ class DummyXMPPHandler(subprotocols.XMPPHandler):
         self.doneInitialized = 0
         self.doneLost = 0
 
-
     def makeConnection(self, xs):
         self.connectionMade()
-
 
     def connectionMade(self):
         self.doneMade += 1
 
-
     def connectionInitialized(self):
         self.doneInitialized += 1
 
-
     def connectionLost(self, reason):
         self.doneLost += 1
-
 
 
 class XMPPHandlerTest(unittest.TestCase):
@@ -65,7 +59,6 @@ class XMPPHandlerTest(unittest.TestCase):
         L{xmlstream.XMPPHandler} implements L{iwokkel.IXMPPHandler}.
         """
         verifyObject(iwokkel.IXMPPHandler, subprotocols.XMPPHandler())
-
 
     def test_send(self):
         """
@@ -83,7 +76,6 @@ class XMPPHandlerTest(unittest.TestCase):
         handler.send('<presence/>')
         self.assertEquals(['<presence/>'], handler.parent.outlist)
 
-
     def test_makeConnection(self):
         """
         Test that makeConnection saves the XML stream and calls connectionMade.
@@ -98,7 +90,6 @@ class XMPPHandlerTest(unittest.TestCase):
         self.assertTrue(handler.doneMade)
         self.assertIdentical(xs, handler.xmlstream)
 
-
     def test_connectionLost(self):
         """
         Test that connectionLost forgets the XML stream.
@@ -110,7 +101,6 @@ class XMPPHandlerTest(unittest.TestCase):
         self.assertIdentical(None, handler.xmlstream)
 
 
-
 class XMPPHandlerCollectionTest(unittest.TestCase):
     """
     Tests for L{subprotocols.XMPPHandlerCollection}.
@@ -119,13 +109,12 @@ class XMPPHandlerCollectionTest(unittest.TestCase):
     def setUp(self):
         self.collection = subprotocols.XMPPHandlerCollection()
 
-
     def test_interface(self):
         """
-        L{subprotocols.StreamManager} implements L{iwokkel.IXMPPHandlerCollection}.
+        L{subprotocols.StreamManager} implements
+        L{iwokkel.IXMPPHandlerCollection}.
         """
         verifyObject(iwokkel.IXMPPHandlerCollection, self.collection)
-
 
     def test_addHandler(self):
         """
@@ -136,7 +125,6 @@ class XMPPHandlerCollectionTest(unittest.TestCase):
         self.assertIn(handler, self.collection)
         self.assertIdentical(self.collection, handler.parent)
 
-
     def test_removeHandler(self):
         """
         Test removal of a protocol handler.
@@ -146,7 +134,6 @@ class XMPPHandlerCollectionTest(unittest.TestCase):
         handler.disownHandlerParent(self.collection)
         self.assertNotIn(handler, self.collection)
         self.assertIdentical(None, handler.parent)
-
 
 
 class StreamManagerTest(unittest.TestCase):
@@ -174,7 +161,6 @@ class StreamManagerTest(unittest.TestCase):
         self.assertEquals(sm.initializationFailed,
                           sm.factory.callbacks['//event/xmpp/initfailed'])
 
-
     def test_connected(self):
         """
         Test that protocol handlers have their connectionMade method called
@@ -189,7 +175,6 @@ class StreamManagerTest(unittest.TestCase):
         self.assertEquals(0, handler.doneInitialized)
         self.assertEquals(0, handler.doneLost)
 
-
     def test_connectedLogTrafficFalse(self):
         """
         Test raw data functions unset when logTraffic is set to False.
@@ -201,7 +186,6 @@ class StreamManagerTest(unittest.TestCase):
         sm._connected(xs)
         self.assertIdentical(None, xs.rawDataInFn)
         self.assertIdentical(None, xs.rawDataOutFn)
-
 
     def test_connectedLogTrafficTrue(self):
         """
@@ -215,7 +199,6 @@ class StreamManagerTest(unittest.TestCase):
         sm._connected(xs)
         self.assertNotIdentical(None, xs.rawDataInFn)
         self.assertNotIdentical(None, xs.rawDataOutFn)
-
 
     def test_authd(self):
         """
@@ -231,7 +214,6 @@ class StreamManagerTest(unittest.TestCase):
         self.assertEquals(1, handler.doneInitialized)
         self.assertEquals(0, handler.doneLost)
 
-
     def test_disconnected(self):
         """
         Test that protocol handlers have their connectionLost method
@@ -246,7 +228,6 @@ class StreamManagerTest(unittest.TestCase):
         self.assertEquals(0, handler.doneInitialized)
         self.assertEquals(1, handler.doneLost)
 
-
     def test_addHandler(self):
         """
         Test the addition of a protocol handler while not connected.
@@ -258,7 +239,6 @@ class StreamManagerTest(unittest.TestCase):
         self.assertEquals(0, handler.doneMade)
         self.assertEquals(0, handler.doneInitialized)
         self.assertEquals(0, handler.doneLost)
-
 
     def test_addHandlerInitialized(self):
         """
@@ -309,7 +289,6 @@ class StreamManagerTest(unittest.TestCase):
         sm.send("<presence/>")
         self.assertEquals("<presence/>", xs.transport.value())
 
-
     def test_sendNotConnected(self):
         """
         Test send when there is no established XML stream.
@@ -340,7 +319,6 @@ class StreamManagerTest(unittest.TestCase):
         self.assertEquals("<presence/>", xs.transport.value())
         self.assertFalse(sm._packetQueue)
 
-
     def test_sendNotInitialized(self):
         """
         Test send when the stream is connected but not yet initialized.
@@ -358,7 +336,6 @@ class StreamManagerTest(unittest.TestCase):
         sm.send("<presence/>")
         self.assertEquals("", xs.transport.value())
         self.assertEquals("<presence/>", sm._packetQueue[0])
-
 
     def test_sendDisconnected(self):
         """
@@ -380,7 +357,6 @@ class StreamManagerTest(unittest.TestCase):
         sm.send("<presence/>")
         self.assertEquals("", xs.transport.value())
         self.assertEquals("<presence/>", sm._packetQueue[0])
-
 
 
 class DummyIQHandler(subprotocols.IQHandlerMixin):

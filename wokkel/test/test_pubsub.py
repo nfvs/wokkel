@@ -24,7 +24,9 @@ NS_PUBSUB_ERRORS = 'http://jabber.org/protocol/pubsub#errors'
 NS_PUBSUB_EVENT = 'http://jabber.org/protocol/pubsub#event'
 NS_PUBSUB_OWNER = 'http://jabber.org/protocol/pubsub#owner'
 NS_PUBSUB_META_DATA = 'http://jabber.org/protocol/pubsub#meta-data'
-NS_PUBSUB_SUBSCRIBE_OPTIONS = 'http://jabber.org/protocol/pubsub#subscribe_options'
+NS_PUBSUB_SUBSCRIBE_OPTIONS = \
+        'http://jabber.org/protocol/pubsub#subscribe_options'
+
 
 def calledAsync(fn):
     """
@@ -62,7 +64,6 @@ class SubscriptionTest(unittest.TestCase):
         self.assertEqual('pending', subscription.state)
         self.assertIdentical(None, subscription.subscriptionIdentifier)
 
-
     def test_fromElementWithSubscriptionIdentifier(self):
         """
         A subscription identifier in the subscription should be parsed, too.
@@ -73,7 +74,6 @@ class SubscriptionTest(unittest.TestCase):
         """
         subscription = pubsub.Subscription.fromElement(parseXml(xml))
         self.assertEqual('1234', subscription.subscriptionIdentifier)
-
 
     def test_toElement(self):
         """
@@ -90,7 +90,6 @@ class SubscriptionTest(unittest.TestCase):
         self.assertEqual('pending', element.getAttribute('subscription'))
         self.assertFalse(element.hasAttribute('subid'))
 
-
     def test_toElementEmptyNodeIdentifier(self):
         """
         The empty node identifier should not yield a node attribute.
@@ -100,7 +99,6 @@ class SubscriptionTest(unittest.TestCase):
                                            'pending')
         element = subscription.toElement()
         self.assertFalse(element.hasAttribute('node'))
-
 
     def test_toElementWithSubscriptionIdentifier(self):
         """
@@ -114,7 +112,6 @@ class SubscriptionTest(unittest.TestCase):
         self.assertEqual('1234', element.getAttribute('subid'))
 
 
-
 class PubSubClientTest(unittest.TestCase):
     timeout = 2
 
@@ -124,13 +121,12 @@ class PubSubClientTest(unittest.TestCase):
         self.protocol.xmlstream = self.stub.xmlstream
         self.protocol.connectionInitialized()
 
-
     def test_interface(self):
         """
-        Do instances of L{pubsub.PubSubClient} provide L{iwokkel.IPubSubClient}?
+        Do instances of L{pubsub.PubSubClient} provide
+        L{iwokkel.IPubSubClient}?
         """
         verify.verifyObject(iwokkel.IPubSubClient, self.protocol)
-
 
     def test_eventItems(self):
         """
@@ -159,7 +155,6 @@ class PubSubClientTest(unittest.TestCase):
         self.stub.send(message)
         return d
 
-
     def test_eventItemsCollection(self):
         """
         Test receiving an items event resulting in a call to itemsReceived.
@@ -183,7 +178,6 @@ class PubSubClientTest(unittest.TestCase):
         d, self.protocol.itemsReceived = calledAsync(itemsReceived)
         self.stub.send(message)
         return d
-
 
     def test_eventItemsError(self):
         """
@@ -210,7 +204,6 @@ class PubSubClientTest(unittest.TestCase):
         self.stub.send(message)
         self.assertFalse(message.handled)
 
-
     def test_eventDelete(self):
         """
         Test receiving a delete event resulting in a call to deleteReceived.
@@ -230,7 +223,6 @@ class PubSubClientTest(unittest.TestCase):
         d, self.protocol.deleteReceived = calledAsync(deleteReceived)
         self.stub.send(message)
         return d
-
 
     def test_eventDeleteRedirect(self):
         """
@@ -255,7 +247,6 @@ class PubSubClientTest(unittest.TestCase):
         self.stub.send(message)
         return d
 
-
     def test_event_purge(self):
         """
         Test receiving a purge event resulting in a call to purgeReceived.
@@ -275,7 +266,6 @@ class PubSubClientTest(unittest.TestCase):
         d, self.protocol.purgeReceived = calledAsync(purgeReceived)
         self.stub.send(message)
         return d
-
 
     def test_createNode(self):
         """
@@ -303,7 +293,6 @@ class PubSubClientTest(unittest.TestCase):
         self.stub.send(response)
         return d
 
-
     def test_createNodeInstant(self):
         """
         Test sending create request resulting in an instant node.
@@ -327,7 +316,6 @@ class PubSubClientTest(unittest.TestCase):
         create['node'] = 'test'
         self.stub.send(response)
         return d
-
 
     def test_createNodeRenamed(self):
         """
@@ -353,7 +341,6 @@ class PubSubClientTest(unittest.TestCase):
         self.stub.send(response)
         return d
 
-
     def test_createNodeWithSender(self):
         """
         Test sending create request from a specific JID.
@@ -368,7 +355,6 @@ class PubSubClientTest(unittest.TestCase):
         response = toResponse(iq, 'result')
         self.stub.send(response)
         return d
-
 
     def test_createNodeWithConfig(self):
         """
@@ -399,11 +385,9 @@ class PubSubClientTest(unittest.TestCase):
         form = data_form.findForm(children[0], NS_PUBSUB_NODE_CONFIG)
         self.assertEqual('submit', form.formType)
 
-
         response = toResponse(iq, 'result')
         self.stub.send(response)
         return d
-
 
     def test_deleteNode(self):
         """
@@ -418,7 +402,7 @@ class PubSubClientTest(unittest.TestCase):
         self.assertEquals('pubsub', iq.pubsub.name)
         self.assertEquals(NS_PUBSUB_OWNER, iq.pubsub.uri)
         children = list(domish.generateElementsQNamed(iq.pubsub.children,
-                                                      'delete', NS_PUBSUB_OWNER))
+                                                    'delete', NS_PUBSUB_OWNER))
         self.assertEquals(1, len(children))
         child = children[0]
         self.assertEquals('test', child['node'])
@@ -426,7 +410,6 @@ class PubSubClientTest(unittest.TestCase):
         response = toResponse(iq, 'result')
         self.stub.send(response)
         return d
-
 
     def test_deleteNodeWithSender(self):
         """
@@ -442,7 +425,6 @@ class PubSubClientTest(unittest.TestCase):
         response = toResponse(iq, 'result')
         self.stub.send(response)
         return d
-
 
     def test_publish(self):
         """
@@ -475,7 +457,6 @@ class PubSubClientTest(unittest.TestCase):
         self.stub.send(response)
         return d
 
-
     def test_publishNoItems(self):
         """
         Test sending publish request without items.
@@ -498,7 +479,6 @@ class PubSubClientTest(unittest.TestCase):
         self.stub.send(response)
         return d
 
-
     def test_publishWithSender(self):
         """
         Test sending publish request from a specific JID.
@@ -514,7 +494,6 @@ class PubSubClientTest(unittest.TestCase):
         response = toResponse(iq, 'result')
         self.stub.send(response)
         return d
-
 
     def test_subscribe(self):
         """
@@ -544,7 +523,6 @@ class PubSubClientTest(unittest.TestCase):
         self.stub.send(response)
         return d
 
-
     def test_subscribeReturnsSubscription(self):
         """
         A successful subscription should return a Subscription instance.
@@ -567,7 +545,6 @@ class PubSubClientTest(unittest.TestCase):
         self.stub.send(response)
         return d
 
-
     def test_subscribePending(self):
         """
         Test sending subscription request that results in a pending
@@ -587,7 +564,6 @@ class PubSubClientTest(unittest.TestCase):
         self.assertFailure(d, pubsub.SubscriptionPending)
         return d
 
-
     def test_subscribeUnconfigured(self):
         """
         Test sending subscription request that results in an unconfigured
@@ -606,7 +582,6 @@ class PubSubClientTest(unittest.TestCase):
         self.stub.send(response)
         self.assertFailure(d, pubsub.SubscriptionUnconfigured)
         return d
-
 
     def test_subscribeWithOptions(self):
         options = {'pubsub#deliver': False}
@@ -640,7 +615,6 @@ class PubSubClientTest(unittest.TestCase):
 
         return d
 
-
     def test_subscribeWithSender(self):
         """
         Test sending subscription request from a specific JID.
@@ -660,7 +634,6 @@ class PubSubClientTest(unittest.TestCase):
         subscription['subscription'] = 'subscribed'
         self.stub.send(response)
         return d
-
 
     def test_subscribeReturningSubscriptionIdentifier(self):
         """
@@ -685,7 +658,6 @@ class PubSubClientTest(unittest.TestCase):
         self.stub.send(response)
         return d
 
-
     def test_unsubscribe(self):
         """
         Test sending unsubscription request.
@@ -699,7 +671,7 @@ class PubSubClientTest(unittest.TestCase):
         self.assertEquals('pubsub', iq.pubsub.name)
         self.assertEquals(NS_PUBSUB, iq.pubsub.uri)
         children = list(domish.generateElementsQNamed(iq.pubsub.children,
-                                                      'unsubscribe', NS_PUBSUB))
+                                                     'unsubscribe', NS_PUBSUB))
         self.assertEquals(1, len(children))
         child = children[0]
         self.assertEquals('test', child['node'])
@@ -707,7 +679,6 @@ class PubSubClientTest(unittest.TestCase):
 
         self.stub.send(toResponse(iq, 'result'))
         return d
-
 
     def test_unsubscribeWithSender(self):
         """
@@ -721,7 +692,6 @@ class PubSubClientTest(unittest.TestCase):
         self.assertEquals('user@example.org', iq['from'])
         self.stub.send(toResponse(iq, 'result'))
         return d
-
 
     def test_unsubscribeWithSubscriptionIdentifier(self):
         """
@@ -737,7 +707,6 @@ class PubSubClientTest(unittest.TestCase):
 
         self.stub.send(toResponse(iq, 'result'))
         return d
-
 
     def test_items(self):
         """
@@ -767,7 +736,6 @@ class PubSubClientTest(unittest.TestCase):
         self.stub.send(response)
 
         return d
-
 
     def test_itemsMaxItems(self):
         """
@@ -804,7 +772,6 @@ class PubSubClientTest(unittest.TestCase):
 
         return d
 
-
     def test_itemsWithSubscriptionIdentifier(self):
         """
         Test sending items request with a subscription identifier.
@@ -824,7 +791,6 @@ class PubSubClientTest(unittest.TestCase):
         self.stub.send(response)
         return d
 
-
     def test_itemsWithSender(self):
         """
         Test sending items request from a specific JID.
@@ -842,7 +808,6 @@ class PubSubClientTest(unittest.TestCase):
 
         self.stub.send(response)
         return d
-
 
     def test_getOptions(self):
         def cb(form):
@@ -872,7 +837,8 @@ class PubSubClientTest(unittest.TestCase):
         self.assertEqual(0, len(child.children))
 
         # Send response
-        form = data_form.Form('form', formNamespace=NS_PUBSUB_SUBSCRIBE_OPTIONS)
+        form = data_form.Form('form',
+                              formNamespace=NS_PUBSUB_SUBSCRIBE_OPTIONS)
         form.addField(data_form.Field('boolean', var='pubsub#deliver',
                                                  label='Enable delivery?',
                                                  value=True))
@@ -883,7 +849,6 @@ class PubSubClientTest(unittest.TestCase):
         self.stub.send(response)
 
         return d
-
 
     def test_getOptionsWithSubscriptionIdentifier(self):
         """
@@ -900,7 +865,8 @@ class PubSubClientTest(unittest.TestCase):
         self.assertEqual('1234', child['subid'])
 
         # Send response
-        form = data_form.Form('form', formNamespace=NS_PUBSUB_SUBSCRIBE_OPTIONS)
+        form = data_form.Form('form',
+                              formNamespace=NS_PUBSUB_SUBSCRIBE_OPTIONS)
         form.addField(data_form.Field('boolean', var='pubsub#deliver',
                                                  label='Enable delivery?',
                                                  value=True))
@@ -911,7 +877,6 @@ class PubSubClientTest(unittest.TestCase):
         self.stub.send(response)
 
         return d
-
 
     def test_setOptions(self):
         """
@@ -944,7 +909,6 @@ class PubSubClientTest(unittest.TestCase):
         self.stub.send(response)
 
         return d
-
 
     def test_setOptionsWithSubscriptionIdentifier(self):
         """
@@ -992,7 +956,6 @@ class PubSubRequestTest(unittest.TestCase):
         self.assertRaises(NotImplementedError,
                           pubsub.PubSubRequest.fromElement, parseXml(xml))
 
-
     def test_fromElementKnownBadCombination(self):
         """
         Multiple verbs in an unknown configuration raises NotImplementedError.
@@ -1032,7 +995,6 @@ class PubSubRequestTest(unittest.TestCase):
         self.assertEqual('test', request.nodeIdentifier)
         self.assertEqual([], request.items)
 
-
     def test_fromElementPublishItems(self):
         """
         Test parsing a publish request with items.
@@ -1055,7 +1017,6 @@ class PubSubRequestTest(unittest.TestCase):
         self.assertEqual(u'item1', request.items[0]["id"])
         self.assertEqual(u'item2', request.items[1]["id"])
 
-
     def test_fromElementPublishNoNode(self):
         """
         A publish request to the root node should raise an exception.
@@ -1075,7 +1036,6 @@ class PubSubRequestTest(unittest.TestCase):
         self.assertEqual('bad-request', err.condition)
         self.assertEqual(NS_PUBSUB_ERRORS, err.appCondition.uri)
         self.assertEqual('nodeid-required', err.appCondition.name)
-
 
     def test_fromElementSubscribe(self):
         """
@@ -1098,7 +1058,6 @@ class PubSubRequestTest(unittest.TestCase):
         self.assertEqual('test', request.nodeIdentifier)
         self.assertEqual(JID('user@example.org/Home'), request.subscriber)
 
-
     def test_fromElementSubscribeEmptyNode(self):
         """
         Test parsing a subscription request to the root node.
@@ -1115,7 +1074,6 @@ class PubSubRequestTest(unittest.TestCase):
 
         request = pubsub.PubSubRequest.fromElement(parseXml(xml))
         self.assertEqual('', request.nodeIdentifier)
-
 
     def test_fromElementSubscribeNoJID(self):
         """
@@ -1136,30 +1094,29 @@ class PubSubRequestTest(unittest.TestCase):
         self.assertEqual(NS_PUBSUB_ERRORS, err.appCondition.uri)
         self.assertEqual('jid-required', err.appCondition.name)
 
-
     def test_fromElementSubscribeWithOptions(self):
         """
         Test parsing a subscription request.
         """
 
         xml = """
-        <iq type='set' to='pubsub.example.org'
-                       from='user@example.org'>
-          <pubsub xmlns='http://jabber.org/protocol/pubsub'>
-            <subscribe node='test' jid='user@example.org/Home'/>
-            <options>
-              <x xmlns="jabber:x:data" type='submit'>
-                <field var='FORM_TYPE' type='hidden'>
-                  <value>http://jabber.org/protocol/pubsub#subscribe_options</value>
-                </field>
-                <field var='pubsub#deliver' type='boolean'
-                       label='Enable delivery?'>
-                  <value>1</value>
-                </field>
-              </x>
-            </options>
-          </pubsub>
-        </iq>
+    <iq type='set' to='pubsub.example.org'
+                   from='user@example.org'>
+      <pubsub xmlns='http://jabber.org/protocol/pubsub'>
+        <subscribe node='test' jid='user@example.org/Home'/>
+        <options>
+          <x xmlns="jabber:x:data" type='submit'>
+            <field var='FORM_TYPE' type='hidden'>
+             <value>http://jabber.org/protocol/pubsub#subscribe_options</value>
+            </field>
+            <field var='pubsub#deliver' type='boolean'
+                   label='Enable delivery?'>
+              <value>1</value>
+            </field>
+          </x>
+        </options>
+      </pubsub>
+    </iq>
         """
 
         request = pubsub.PubSubRequest.fromElement(parseXml(xml))
@@ -1167,31 +1124,30 @@ class PubSubRequestTest(unittest.TestCase):
         request.options.typeCheck({'pubsub#deliver': {'type': 'boolean'}})
         self.assertEqual({'pubsub#deliver': True}, request.options.getValues())
 
-
     def test_fromElementSubscribeWithOptionsBadFormType(self):
         """
         The options form should have the right type.
         """
 
         xml = """
-        <iq type='set' to='pubsub.example.org'
-                       from='user@example.org'>
-          <pubsub xmlns='http://jabber.org/protocol/pubsub'>
-            <subscribe node='test' jid='user@example.org/Home'/>
-            <options>
-              <x xmlns="jabber:x:data" type='result'>
-                <field var='FORM_TYPE' type='hidden'>
-                  <value>http://jabber.org/protocol/pubsub#subscribe_options</value>
-                </field>
-                <field var='pubsub#deliver' type='boolean'
-                       label='Enable delivery?'>
-                  <value>1</value>
-                </field>
-              </x>
-            </options>
-          </pubsub>
-        </iq>
-        """
+    <iq type='set' to='pubsub.example.org'
+                   from='user@example.org'>
+      <pubsub xmlns='http://jabber.org/protocol/pubsub'>
+        <subscribe node='test' jid='user@example.org/Home'/>
+        <options>
+          <x xmlns="jabber:x:data" type='result'>
+            <field var='FORM_TYPE' type='hidden'>
+             <value>http://jabber.org/protocol/pubsub#subscribe_options</value>
+            </field>
+            <field var='pubsub#deliver' type='boolean'
+                   label='Enable delivery?'>
+              <value>1</value>
+            </field>
+          </x>
+        </options>
+      </pubsub>
+    </iq>
+    """
 
         err = self.assertRaises(error.StanzaError,
                                 pubsub.PubSubRequest.fromElement,
@@ -1199,7 +1155,6 @@ class PubSubRequestTest(unittest.TestCase):
         self.assertEqual('bad-request', err.condition)
         self.assertEqual("Unexpected form type 'result'", err.text)
         self.assertEqual(None, err.appCondition)
-
 
     def test_fromElementSubscribeWithOptionsEmpty(self):
         """
@@ -1219,7 +1174,6 @@ class PubSubRequestTest(unittest.TestCase):
         request = pubsub.PubSubRequest.fromElement(parseXml(xml))
         self.assertEqual('subscribe', request.verb)
         self.assertEqual({}, request.options.getValues())
-
 
     def test_fromElementUnsubscribe(self):
         """
@@ -1242,7 +1196,6 @@ class PubSubRequestTest(unittest.TestCase):
         self.assertEqual('test', request.nodeIdentifier)
         self.assertEqual(JID('user@example.org/Home'), request.subscriber)
 
-
     def test_fromElementUnsubscribeWithSubscriptionIdentifier(self):
         """
         Test parsing an unsubscription request with subscription identifier.
@@ -1261,10 +1214,9 @@ class PubSubRequestTest(unittest.TestCase):
         request = pubsub.PubSubRequest.fromElement(parseXml(xml))
         self.assertEqual('1234', request.subscriptionIdentifier)
 
-
     def test_fromElementUnsubscribeNoJID(self):
         """
-        Unsubscribe requests without a JID should raise a bad-request exception.
+        Unsubscribe requests without a JID should raise a bad-request exception
         """
         xml = """
         <iq type='set' to='pubsub.example.org'
@@ -1280,7 +1232,6 @@ class PubSubRequestTest(unittest.TestCase):
         self.assertEqual('bad-request', err.condition)
         self.assertEqual(NS_PUBSUB_ERRORS, err.appCondition.uri)
         self.assertEqual('jid-required', err.appCondition.name)
-
 
     def test_fromElementOptionsGet(self):
         """
@@ -1303,7 +1254,6 @@ class PubSubRequestTest(unittest.TestCase):
         self.assertEqual('test', request.nodeIdentifier)
         self.assertEqual(JID('user@example.org/Home'), request.subscriber)
 
-
     def test_fromElementOptionsGetWithSubscriptionIdentifier(self):
         """
         Test parsing a request for getting subscription options with subid.
@@ -1322,26 +1272,25 @@ class PubSubRequestTest(unittest.TestCase):
         request = pubsub.PubSubRequest.fromElement(parseXml(xml))
         self.assertEqual('1234', request.subscriptionIdentifier)
 
-
     def test_fromElementOptionsSet(self):
         """
         Test parsing a request for setting subscription options.
         """
 
         xml = """
-        <iq type='set' to='pubsub.example.org'
-                       from='user@example.org'>
-          <pubsub xmlns='http://jabber.org/protocol/pubsub'>
-            <options node='test' jid='user@example.org/Home'>
-              <x xmlns='jabber:x:data' type='submit'>
-                <field var='FORM_TYPE' type='hidden'>
-                  <value>http://jabber.org/protocol/pubsub#subscribe_options</value>
-                </field>
-                <field var='pubsub#deliver'><value>1</value></field>
-              </x>
-            </options>
-          </pubsub>
-        </iq>
+    <iq type='set' to='pubsub.example.org'
+                   from='user@example.org'>
+      <pubsub xmlns='http://jabber.org/protocol/pubsub'>
+        <options node='test' jid='user@example.org/Home'>
+          <x xmlns='jabber:x:data' type='submit'>
+            <field var='FORM_TYPE' type='hidden'>
+             <value>http://jabber.org/protocol/pubsub#subscribe_options</value>
+            </field>
+            <field var='pubsub#deliver'><value>1</value></field>
+          </x>
+        </options>
+      </pubsub>
+    </iq>
         """
 
         request = pubsub.PubSubRequest.fromElement(parseXml(xml))
@@ -1352,32 +1301,30 @@ class PubSubRequestTest(unittest.TestCase):
         self.assertEqual(JID('user@example.org/Home'), request.subscriber)
         self.assertEqual({'pubsub#deliver': '1'}, request.options.getValues())
 
-
     def test_fromElementOptionsSetWithSubscriptionIdentifier(self):
         """
         Test parsing a request for setting subscription options with subid.
         """
 
         xml = """
-        <iq type='set' to='pubsub.example.org'
-                       from='user@example.org'>
-          <pubsub xmlns='http://jabber.org/protocol/pubsub'>
-            <options node='test' jid='user@example.org/Home'
-                     subid='1234'>
-              <x xmlns='jabber:x:data' type='submit'>
-                <field var='FORM_TYPE' type='hidden'>
-                  <value>http://jabber.org/protocol/pubsub#subscribe_options</value>
-                </field>
-                <field var='pubsub#deliver'><value>1</value></field>
-              </x>
-            </options>
-          </pubsub>
-        </iq>
+    <iq type='set' to='pubsub.example.org'
+                   from='user@example.org'>
+      <pubsub xmlns='http://jabber.org/protocol/pubsub'>
+        <options node='test' jid='user@example.org/Home'
+                 subid='1234'>
+          <x xmlns='jabber:x:data' type='submit'>
+            <field var='FORM_TYPE' type='hidden'>
+             <value>http://jabber.org/protocol/pubsub#subscribe_options</value>
+            </field>
+            <field var='pubsub#deliver'><value>1</value></field>
+          </x>
+        </options>
+      </pubsub>
+    </iq>
         """
 
         request = pubsub.PubSubRequest.fromElement(parseXml(xml))
         self.assertEqual('1234', request.subscriptionIdentifier)
-
 
     def test_fromElementOptionsSetCancel(self):
         """
@@ -1398,26 +1345,25 @@ class PubSubRequestTest(unittest.TestCase):
         request = pubsub.PubSubRequest.fromElement(parseXml(xml))
         self.assertEqual('cancel', request.options.formType)
 
-
     def test_fromElementOptionsSetBadFormType(self):
         """
         On a options set request unknown fields should be ignored.
         """
 
         xml = """
-        <iq type='set' to='pubsub.example.org'
-                       from='user@example.org'>
-          <pubsub xmlns='http://jabber.org/protocol/pubsub'>
-            <options node='test' jid='user@example.org/Home'>
-              <x xmlns='jabber:x:data' type='result'>
-                <field var='FORM_TYPE' type='hidden'>
-                  <value>http://jabber.org/protocol/pubsub#subscribe_options</value>
-                </field>
-                <field var='pubsub#deliver'><value>1</value></field>
-              </x>
-            </options>
-          </pubsub>
-        </iq>
+    <iq type='set' to='pubsub.example.org'
+                   from='user@example.org'>
+      <pubsub xmlns='http://jabber.org/protocol/pubsub'>
+        <options node='test' jid='user@example.org/Home'>
+          <x xmlns='jabber:x:data' type='result'>
+            <field var='FORM_TYPE' type='hidden'>
+             <value>http://jabber.org/protocol/pubsub#subscribe_options</value>
+            </field>
+            <field var='pubsub#deliver'><value>1</value></field>
+          </x>
+        </options>
+      </pubsub>
+    </iq>
         """
 
         err = self.assertRaises(error.StanzaError,
@@ -1426,7 +1372,6 @@ class PubSubRequestTest(unittest.TestCase):
         self.assertEqual('bad-request', err.condition)
         self.assertEqual("Unexpected form type 'result'", err.text)
         self.assertEqual(None, err.appCondition)
-
 
     def test_fromElementOptionsSetNoForm(self):
         """
@@ -1447,7 +1392,6 @@ class PubSubRequestTest(unittest.TestCase):
         self.assertEqual('bad-request', err.condition)
         self.assertEqual(None, err.appCondition)
 
-
     def test_fromElementSubscriptions(self):
         """
         Test parsing a request for all subscriptions.
@@ -1467,7 +1411,6 @@ class PubSubRequestTest(unittest.TestCase):
         self.assertEqual(JID('user@example.org'), request.sender)
         self.assertEqual(JID('pubsub.example.org'), request.recipient)
 
-
     def test_fromElementAffiliations(self):
         """
         Test parsing a request for all affiliations.
@@ -1486,7 +1429,6 @@ class PubSubRequestTest(unittest.TestCase):
         self.assertEqual('affiliations', request.verb)
         self.assertEqual(JID('user@example.org'), request.sender)
         self.assertEqual(JID('pubsub.example.org'), request.recipient)
-
 
     def test_fromElementCreate(self):
         """
@@ -1509,7 +1451,6 @@ class PubSubRequestTest(unittest.TestCase):
         self.assertEqual('mynode', request.nodeIdentifier)
         self.assertIdentical(None, request.options)
 
-
     def test_fromElementCreateInstant(self):
         """
         Test parsing a request to create an instant node.
@@ -1526,7 +1467,6 @@ class PubSubRequestTest(unittest.TestCase):
 
         request = pubsub.PubSubRequest.fromElement(parseXml(xml))
         self.assertIdentical(None, request.nodeIdentifier)
-
 
     def test_fromElementCreateConfigureEmpty(self):
         """
@@ -1545,7 +1485,6 @@ class PubSubRequestTest(unittest.TestCase):
 
         request = pubsub.PubSubRequest.fromElement(parseXml(xml))
         self.assertEqual({}, request.options.getValues())
-
 
     def test_fromElementCreateConfigureEmptyWrongOrder(self):
         """
@@ -1567,7 +1506,6 @@ class PubSubRequestTest(unittest.TestCase):
 
         request = pubsub.PubSubRequest.fromElement(parseXml(xml))
         self.assertEqual({}, request.options.getValues())
-
 
     def test_fromElementCreateConfigure(self):
         """
@@ -1599,7 +1537,6 @@ class PubSubRequestTest(unittest.TestCase):
         self.assertIn('pubsub#persist_items', values)
         self.assertEqual(u'0', values['pubsub#persist_items'])
 
-
     def test_fromElementCreateConfigureBadFormType(self):
         """
         The form of a node creation request should have the right type.
@@ -1630,7 +1567,6 @@ class PubSubRequestTest(unittest.TestCase):
         self.assertEqual("Unexpected form type 'result'", err.text)
         self.assertEqual(None, err.appCondition)
 
-
     def test_fromElementDefault(self):
         """
         Test parsing a request for the default node configuration.
@@ -1650,7 +1586,6 @@ class PubSubRequestTest(unittest.TestCase):
         self.assertEqual(JID('user@example.org'), request.sender)
         self.assertEqual(JID('pubsub.example.org'), request.recipient)
         self.assertEqual('leaf', request.nodeType)
-
 
     def test_fromElementDefaultCollection(self):
         """
@@ -1679,7 +1614,6 @@ class PubSubRequestTest(unittest.TestCase):
         request = pubsub.PubSubRequest.fromElement(parseXml(xml))
         self.assertEqual('collection', request.nodeType)
 
-
     def test_fromElementConfigureGet(self):
         """
         Test parsing a node configuration get request.
@@ -1699,7 +1633,6 @@ class PubSubRequestTest(unittest.TestCase):
         self.assertEqual(JID('user@example.org'), request.sender)
         self.assertEqual(JID('pubsub.example.org'), request.recipient)
         self.assertEqual('test', request.nodeIdentifier)
-
 
     def test_fromElementConfigureSet(self):
         """
@@ -1732,7 +1665,6 @@ class PubSubRequestTest(unittest.TestCase):
                           'pubsub#persist_items': '1'},
                          request.options.getValues())
 
-
     def test_fromElementConfigureSetCancel(self):
         """
         The node configuration is cancelled, so no options.
@@ -1751,7 +1683,6 @@ class PubSubRequestTest(unittest.TestCase):
 
         request = pubsub.PubSubRequest.fromElement(parseXml(xml))
         self.assertEqual('cancel', request.options.formType)
-
 
     def test_fromElementConfigureSetBadFormType(self):
         """
@@ -1782,7 +1713,6 @@ class PubSubRequestTest(unittest.TestCase):
         self.assertEqual("Unexpected form type 'result'", err.text)
         self.assertEqual(None, err.appCondition)
 
-
     def test_fromElementConfigureSetNoForm(self):
         """
         On a node configuration set request a form is required.
@@ -1801,7 +1731,6 @@ class PubSubRequestTest(unittest.TestCase):
                                 parseXml(xml))
         self.assertEqual('bad-request', err.condition)
         self.assertEqual(None, err.appCondition)
-
 
     def test_fromElementItems(self):
         """
@@ -1825,7 +1754,6 @@ class PubSubRequestTest(unittest.TestCase):
         self.assertIdentical(None, request.subscriptionIdentifier)
         self.assertEqual([], request.itemIdentifiers)
 
-
     def test_fromElementItemsSubscriptionIdentifier(self):
         """
         Test parsing an items request with subscription identifier.
@@ -1841,7 +1769,6 @@ class PubSubRequestTest(unittest.TestCase):
 
         request = pubsub.PubSubRequest.fromElement(parseXml(xml))
         self.assertEqual('1234', request.subscriptionIdentifier)
-
 
     def test_fromElementRetract(self):
         """
@@ -1867,7 +1794,6 @@ class PubSubRequestTest(unittest.TestCase):
         self.assertEqual('test', request.nodeIdentifier)
         self.assertEqual(['item1', 'item2'], request.itemIdentifiers)
 
-
     def test_fromElementPurge(self):
         """
         Test parsing a purge request.
@@ -1887,7 +1813,6 @@ class PubSubRequestTest(unittest.TestCase):
         self.assertEqual(JID('user@example.org'), request.sender)
         self.assertEqual(JID('pubsub.example.org'), request.recipient)
         self.assertEqual('test', request.nodeIdentifier)
-
 
     def test_fromElementDelete(self):
         """
@@ -1910,7 +1835,6 @@ class PubSubRequestTest(unittest.TestCase):
         self.assertEqual('test', request.nodeIdentifier)
 
 
-
 class PubSubServiceTest(unittest.TestCase, TestableRequestHandlerMixin):
     """
     Tests for L{pubsub.PubSubService}.
@@ -1924,17 +1848,16 @@ class PubSubServiceTest(unittest.TestCase, TestableRequestHandlerMixin):
 
     def test_interface(self):
         """
-        Do instances of L{pubsub.PubSubService} provide L{iwokkel.IPubSubService}?
+        Do instances of L{pubsub.PubSubService} provide
+        L{iwokkel.IPubSubService}?
         """
         verify.verifyObject(iwokkel.IPubSubService, self.service)
-
 
     def test_interfaceIDisco(self):
         """
         Do instances of L{pubsub.PubSubService} provide L{iwokkel.IDisco}?
         """
         verify.verifyObject(iwokkel.IDisco, self.service)
-
 
     def test_connectionMade(self):
         """
@@ -1958,7 +1881,6 @@ class PubSubServiceTest(unittest.TestCase, TestableRequestHandlerMixin):
 
         self.assertEqual(4, len(requests))
 
-
     def test_getDiscoInfo(self):
         """
         Test getDiscoInfo calls getNodeInfo and returns some minimal info.
@@ -1974,7 +1896,6 @@ class PubSubServiceTest(unittest.TestCase, TestableRequestHandlerMixin):
                                       JID('pubsub.example.org'), '')
         d.addCallback(cb)
         return d
-
 
     def test_getDiscoInfoNodeType(self):
         """
@@ -1995,7 +1916,6 @@ class PubSubServiceTest(unittest.TestCase, TestableRequestHandlerMixin):
                                       JID('pubsub.example.org'), '')
         d.addCallback(cb)
         return d
-
 
     def test_getDiscoInfoMetaData(self):
         """
@@ -2023,7 +1943,6 @@ class PubSubServiceTest(unittest.TestCase, TestableRequestHandlerMixin):
         d.addCallback(cb)
         return d
 
-
     def test_getDiscoInfoResourceFeatures(self):
         """
         Test getDiscoInfo with the resource features.
@@ -2040,7 +1959,6 @@ class PubSubServiceTest(unittest.TestCase, TestableRequestHandlerMixin):
                                       JID('pubsub.example.org'), '')
         d.addCallback(cb)
         return d
-
 
     def test_getDiscoInfoBadResponse(self):
         """
@@ -2059,14 +1977,14 @@ class PubSubServiceTest(unittest.TestCase, TestableRequestHandlerMixin):
         d.addCallback(cb)
         return d
 
-
     def test_getDiscoInfoException(self):
         """
         If getInfo returns invalid response, it should be logged, then ignored.
         """
         def cb(info):
             self.assertEquals([], info)
-            self.assertEqual(1, len(self.flushLoggedErrors(NotImplementedError)))
+            self.assertEqual(1,
+                             len(self.flushLoggedErrors(NotImplementedError)))
 
         def getInfo(requestor, target, nodeIdentifier):
             return defer.fail(NotImplementedError())
@@ -2076,7 +1994,6 @@ class PubSubServiceTest(unittest.TestCase, TestableRequestHandlerMixin):
                                       JID('pubsub.example.org'), 'test')
         d.addCallback(cb)
         return d
-
 
     def test_getDiscoItemsRoot(self):
         """
@@ -2102,7 +2019,6 @@ class PubSubServiceTest(unittest.TestCase, TestableRequestHandlerMixin):
         d.addCallback(cb)
         return d
 
-
     def test_getDiscoItemsRootHideNodes(self):
         """
         Test getDiscoItems on the root node.
@@ -2121,7 +2037,6 @@ class PubSubServiceTest(unittest.TestCase, TestableRequestHandlerMixin):
         d.addCallback(cb)
         return d
 
-
     def test_getDiscoItemsNonRoot(self):
         """
         Test getDiscoItems on a non-root node.
@@ -2138,7 +2053,6 @@ class PubSubServiceTest(unittest.TestCase, TestableRequestHandlerMixin):
                                        'test')
         d.addCallback(cb)
         return d
-
 
     def test_on_publish(self):
         """
@@ -2161,7 +2075,6 @@ class PubSubServiceTest(unittest.TestCase, TestableRequestHandlerMixin):
         self.resource.publish = publish
         verify.verifyObject(iwokkel.IPubSubResource, self.resource)
         return self.handleRequest(xml)
-
 
     def test_on_subscribe(self):
         """
@@ -2197,7 +2110,6 @@ class PubSubServiceTest(unittest.TestCase, TestableRequestHandlerMixin):
         d.addCallback(cb)
         return d
 
-
     def test_on_subscribeEmptyNode(self):
         """
         A successful subscription on root node should return no node attribute.
@@ -2226,7 +2138,6 @@ class PubSubServiceTest(unittest.TestCase, TestableRequestHandlerMixin):
         d.addCallback(cb)
         return d
 
-
     def test_on_subscribeSubscriptionIdentifier(self):
         """
         If a subscription returns a subid, this should be available.
@@ -2249,14 +2160,14 @@ class PubSubServiceTest(unittest.TestCase, TestableRequestHandlerMixin):
             return defer.succeed(subscription)
 
         def cb(element):
-            self.assertEqual('1234', element.subscription.getAttribute('subid'))
+            self.assertEqual('1234',
+                             element.subscription.getAttribute('subid'))
 
         self.resource.subscribe = subscribe
         verify.verifyObject(iwokkel.IPubSubResource, self.resource)
         d = self.handleRequest(xml)
         d.addCallback(cb)
         return d
-
 
     def test_on_unsubscribe(self):
         """
@@ -2283,7 +2194,6 @@ class PubSubServiceTest(unittest.TestCase, TestableRequestHandlerMixin):
         d = self.handleRequest(xml)
         d.addCallback(cb)
         return d
-
 
     def test_on_unsubscribe(self):
         """
@@ -2312,7 +2222,6 @@ class PubSubServiceTest(unittest.TestCase, TestableRequestHandlerMixin):
         d.addCallback(cb)
         return d
 
-
     def test_on_optionsGet(self):
         """
         Getting subscription options is not supported.
@@ -2337,26 +2246,25 @@ class PubSubServiceTest(unittest.TestCase, TestableRequestHandlerMixin):
         d.addCallback(cb)
         return d
 
-
     def test_on_optionsSet(self):
         """
         Setting subscription options is not supported.
         """
 
         xml = """
-        <iq type='set' to='pubsub.example.org'
-                       from='user@example.org'>
-          <pubsub xmlns='http://jabber.org/protocol/pubsub'>
-            <options node='test' jid='user@example.org/Home'>
-              <x xmlns='jabber:x:data' type='submit'>
-                <field var='FORM_TYPE' type='hidden'>
-                  <value>http://jabber.org/protocol/pubsub#subscribe_options</value>
-                </field>
-                <field var='pubsub#deliver'><value>1</value></field>
-              </x>
-            </options>
-          </pubsub>
-        </iq>
+    <iq type='set' to='pubsub.example.org'
+                   from='user@example.org'>
+      <pubsub xmlns='http://jabber.org/protocol/pubsub'>
+        <options node='test' jid='user@example.org/Home'>
+          <x xmlns='jabber:x:data' type='submit'>
+            <field var='FORM_TYPE' type='hidden'>
+             <value>http://jabber.org/protocol/pubsub#subscribe_options</value>
+            </field>
+            <field var='pubsub#deliver'><value>1</value></field>
+          </x>
+        </options>
+      </pubsub>
+    </iq>
         """
 
         def cb(result):
@@ -2368,7 +2276,6 @@ class PubSubServiceTest(unittest.TestCase, TestableRequestHandlerMixin):
         self.assertFailure(d, error.StanzaError)
         d.addCallback(cb)
         return d
-
 
     def test_on_subscriptions(self):
         """
@@ -2410,7 +2317,6 @@ class PubSubServiceTest(unittest.TestCase, TestableRequestHandlerMixin):
         d.addCallback(cb)
         return d
 
-
     def test_on_subscriptionsWithSubscriptionIdentifier(self):
         """
         A subscriptions request response should include subids, if set.
@@ -2440,7 +2346,6 @@ class PubSubServiceTest(unittest.TestCase, TestableRequestHandlerMixin):
         d = self.handleRequest(xml)
         d.addCallback(cb)
         return d
-
 
     def test_on_affiliations(self):
         """
@@ -2480,7 +2385,6 @@ class PubSubServiceTest(unittest.TestCase, TestableRequestHandlerMixin):
         d.addCallback(cb)
         return d
 
-
     def test_on_create(self):
         """
         Replies to create node requests don't return the created node.
@@ -2506,7 +2410,6 @@ class PubSubServiceTest(unittest.TestCase, TestableRequestHandlerMixin):
         d = self.handleRequest(xml)
         d.addCallback(cb)
         return d
-
 
     def test_on_createChanged(self):
         """
@@ -2538,7 +2441,6 @@ class PubSubServiceTest(unittest.TestCase, TestableRequestHandlerMixin):
         d.addCallback(cb)
         return d
 
-
     def test_on_createInstant(self):
         """
         Replies to create instant node requests return the created node.
@@ -2567,7 +2469,6 @@ class PubSubServiceTest(unittest.TestCase, TestableRequestHandlerMixin):
         d = self.handleRequest(xml)
         d.addCallback(cb)
         return d
-
 
     def test_on_createWithConfig(self):
         """
@@ -2614,7 +2515,6 @@ class PubSubServiceTest(unittest.TestCase, TestableRequestHandlerMixin):
         verify.verifyObject(iwokkel.IPubSubResource, self.resource)
         return self.handleRequest(xml)
 
-
     def test_on_default(self):
         """
         A default request should result in
@@ -2657,7 +2557,6 @@ class PubSubServiceTest(unittest.TestCase, TestableRequestHandlerMixin):
         d.addCallback(cb)
         return d
 
-
     def test_on_defaultCollection(self):
         """
         Responses to default requests should depend on passed node type.
@@ -2697,7 +2596,6 @@ class PubSubServiceTest(unittest.TestCase, TestableRequestHandlerMixin):
         verify.verifyObject(iwokkel.IPubSubResource, self.resource)
         return self.handleRequest(xml)
 
-
     def test_on_defaultUnknownNodeType(self):
         """
         A default request should result in
@@ -2735,7 +2633,6 @@ class PubSubServiceTest(unittest.TestCase, TestableRequestHandlerMixin):
         self.assertFailure(d, error.StanzaError)
         d.addCallback(cb)
         return d
-
 
     def test_on_configureGet(self):
         """
@@ -2807,7 +2704,6 @@ class PubSubServiceTest(unittest.TestCase, TestableRequestHandlerMixin):
         d.addCallback(cb)
         return d
 
-
     def test_on_configureSet(self):
         """
         On a node configuration set request the Data Form is parsed and
@@ -2852,7 +2748,6 @@ class PubSubServiceTest(unittest.TestCase, TestableRequestHandlerMixin):
         verify.verifyObject(iwokkel.IPubSubResource, self.resource)
         return self.handleRequest(xml)
 
-
     def test_on_configureSetCancel(self):
         """
         The node configuration is cancelled,
@@ -2880,7 +2775,6 @@ class PubSubServiceTest(unittest.TestCase, TestableRequestHandlerMixin):
         self.resource.configureSet = configureSet
         verify.verifyObject(iwokkel.IPubSubResource, self.resource)
         return self.handleRequest(xml)
-
 
     def test_on_configureSetIgnoreUnknown(self):
         """
@@ -2923,7 +2817,6 @@ class PubSubServiceTest(unittest.TestCase, TestableRequestHandlerMixin):
         verify.verifyObject(iwokkel.IPubSubResource, self.resource)
         return self.handleRequest(xml)
 
-
     def test_on_configureSetBadFormType(self):
         """
         On a node configuration set request unknown fields should be ignored.
@@ -2954,7 +2847,6 @@ class PubSubServiceTest(unittest.TestCase, TestableRequestHandlerMixin):
         self.assertFailure(d, error.StanzaError)
         d.addCallback(cb)
         return d
-
 
     def test_on_items(self):
         """
@@ -2988,7 +2880,6 @@ class PubSubServiceTest(unittest.TestCase, TestableRequestHandlerMixin):
         d.addCallback(cb)
         return d
 
-
     def test_on_retract(self):
         """
         A retract request should result in L{PubSubResource.retract}
@@ -3014,7 +2905,6 @@ class PubSubServiceTest(unittest.TestCase, TestableRequestHandlerMixin):
         verify.verifyObject(iwokkel.IPubSubResource, self.resource)
         return self.handleRequest(xml)
 
-
     def test_on_purge(self):
         """
         A purge request should result in L{PubSubResource.purge} being
@@ -3036,7 +2926,6 @@ class PubSubServiceTest(unittest.TestCase, TestableRequestHandlerMixin):
         self.resource.purge = purge
         verify.verifyObject(iwokkel.IPubSubResource, self.resource)
         return self.handleRequest(xml)
-
 
     def test_on_delete(self):
         """
@@ -3060,7 +2949,6 @@ class PubSubServiceTest(unittest.TestCase, TestableRequestHandlerMixin):
         verify.verifyObject(iwokkel.IPubSubResource, self.resource)
         return self.handleRequest(xml)
 
-
     def test_notifyDelete(self):
         """
         Subscribers should be sent a delete notification.
@@ -3080,7 +2968,6 @@ class PubSubServiceTest(unittest.TestCase, TestableRequestHandlerMixin):
         self.assertEqual(NS_PUBSUB_EVENT, message.event.delete.uri)
         self.assertTrue(message.event.delete.hasAttribute('node'))
         self.assertEqual('test', message.event.delete['node'])
-
 
     def test_notifyDeleteRedirect(self):
         """
@@ -3106,7 +2993,6 @@ class PubSubServiceTest(unittest.TestCase, TestableRequestHandlerMixin):
         self.assertEqual(NS_PUBSUB_EVENT, message.event.delete.redirect.uri)
         self.assertTrue(message.event.delete.redirect.hasAttribute('uri'))
         self.assertEqual(redirectURI, message.event.delete.redirect['uri'])
-
 
     def test_on_subscriptionsGet(self):
         """
@@ -3134,7 +3020,6 @@ class PubSubServiceTest(unittest.TestCase, TestableRequestHandlerMixin):
         d.addCallback(cb)
         return d
 
-
     def test_on_subscriptionsSet(self):
         """
         Setting subscription options is not supported.
@@ -3161,7 +3046,6 @@ class PubSubServiceTest(unittest.TestCase, TestableRequestHandlerMixin):
         d.addCallback(cb)
         return d
 
-
     def test_on_affiliationsGet(self):
         """
         Getting subscription options is not supported.
@@ -3187,7 +3071,6 @@ class PubSubServiceTest(unittest.TestCase, TestableRequestHandlerMixin):
         self.assertFailure(d, error.StanzaError)
         d.addCallback(cb)
         return d
-
 
     def test_on_affiliationsSet(self):
         """
@@ -3216,14 +3099,13 @@ class PubSubServiceTest(unittest.TestCase, TestableRequestHandlerMixin):
         return d
 
 
-
-class PubSubServiceWithoutResourceTest(unittest.TestCase, TestableRequestHandlerMixin):
+class PubSubServiceWithoutResourceTest(unittest.TestCase,
+                                       TestableRequestHandlerMixin):
 
     def setUp(self):
         self.stub = XmlStreamStub()
         self.service = pubsub.PubSubService()
         self.service.send = self.stub.xmlstream.send
-
 
     def test_getDiscoInfo(self):
         """
@@ -3240,7 +3122,6 @@ class PubSubServiceWithoutResourceTest(unittest.TestCase, TestableRequestHandler
                                       JID('pubsub.example.org'), '')
         d.addCallback(cb)
         return d
-
 
     def test_publish(self):
         """
@@ -3267,7 +3148,6 @@ class PubSubServiceWithoutResourceTest(unittest.TestCase, TestableRequestHandler
         d.addCallback(cb)
         return d
 
-
     def test_subscribe(self):
         """
         Non-overridden L{PubSubService.subscribe} yields unsupported error.
@@ -3293,7 +3173,6 @@ class PubSubServiceWithoutResourceTest(unittest.TestCase, TestableRequestHandler
         d.addCallback(cb)
         return d
 
-
     def test_unsubscribe(self):
         """
         Non-overridden L{PubSubService.unsubscribe} yields unsupported error.
@@ -3318,7 +3197,6 @@ class PubSubServiceWithoutResourceTest(unittest.TestCase, TestableRequestHandler
         self.assertFailure(d, error.StanzaError)
         d.addCallback(cb)
         return d
-
 
     def test_subscriptions(self):
         """
@@ -3346,7 +3224,6 @@ class PubSubServiceWithoutResourceTest(unittest.TestCase, TestableRequestHandler
         d.addCallback(cb)
         return d
 
-
     def test_affiliations(self):
         """
         Non-overridden L{PubSubService.affiliations} yields unsupported error.
@@ -3373,7 +3250,6 @@ class PubSubServiceWithoutResourceTest(unittest.TestCase, TestableRequestHandler
         d.addCallback(cb)
         return d
 
-
     def test_create(self):
         """
         Non-overridden L{PubSubService.create} yields unsupported error.
@@ -3399,7 +3275,6 @@ class PubSubServiceWithoutResourceTest(unittest.TestCase, TestableRequestHandler
         d.addCallback(cb)
         return d
 
-
     def test_getDefaultConfiguration(self):
         """
         Non-overridden L{PubSubService.getDefaultConfiguration} yields
@@ -3419,13 +3294,13 @@ class PubSubServiceWithoutResourceTest(unittest.TestCase, TestableRequestHandler
             self.assertEquals('feature-not-implemented', result.condition)
             self.assertEquals('unsupported', result.appCondition.name)
             self.assertEquals(NS_PUBSUB_ERRORS, result.appCondition.uri)
-            self.assertEquals('retrieve-default', result.appCondition['feature'])
+            self.assertEquals('retrieve-default',
+                              result.appCondition['feature'])
 
         d = self.handleRequest(xml)
         self.assertFailure(d, error.StanzaError)
         d.addCallback(cb)
         return d
-
 
     def test_getConfiguration(self):
         """
@@ -3452,7 +3327,6 @@ class PubSubServiceWithoutResourceTest(unittest.TestCase, TestableRequestHandler
         self.assertFailure(d, error.StanzaError)
         d.addCallback(cb)
         return d
-
 
     def test_setConfiguration(self):
         """
@@ -3487,7 +3361,6 @@ class PubSubServiceWithoutResourceTest(unittest.TestCase, TestableRequestHandler
         self.assertFailure(d, error.StanzaError)
         d.addCallback(cb)
         return d
-
 
     def test_setConfigurationOptionsDict(self):
         """
@@ -3525,11 +3398,9 @@ class PubSubServiceWithoutResourceTest(unittest.TestCase, TestableRequestHandler
             self.assertEquals({'pubsub#deliver_payloads': False,
                                'pubsub#persist_items': True}, options)
 
-
         self.service.getConfigurationOptions = getConfigurationOptions
         self.service.setConfiguration = setConfiguration
         return self.handleRequest(xml)
-
 
     def test_items(self):
         """
@@ -3554,7 +3425,6 @@ class PubSubServiceWithoutResourceTest(unittest.TestCase, TestableRequestHandler
         self.assertFailure(d, error.StanzaError)
         d.addCallback(cb)
         return d
-
 
     def test_retract(self):
         """
@@ -3583,7 +3453,6 @@ class PubSubServiceWithoutResourceTest(unittest.TestCase, TestableRequestHandler
         d.addCallback(cb)
         return d
 
-
     def test_purge(self):
         """
         Non-overridden L{PubSubService.purge} yields unsupported error.
@@ -3607,7 +3476,6 @@ class PubSubServiceWithoutResourceTest(unittest.TestCase, TestableRequestHandler
         self.assertFailure(d, error.StanzaError)
         d.addCallback(cb)
         return d
-
 
     def test_delete(self):
         """
@@ -3634,19 +3502,17 @@ class PubSubServiceWithoutResourceTest(unittest.TestCase, TestableRequestHandler
         return d
 
 
-
 class PubSubResourceTest(unittest.TestCase):
 
     def setUp(self):
         self.resource = pubsub.PubSubResource()
 
-
     def test_interface(self):
         """
-        Do instances of L{pubsub.PubSubResource} provide L{iwokkel.IPubSubResource}?
+        Do instances of L{pubsub.PubSubResource} provide
+        L{iwokkel.IPubSubResource}?
         """
         verify.verifyObject(iwokkel.IPubSubResource, self.resource)
-
 
     def test_getNodes(self):
         """
@@ -3660,7 +3526,6 @@ class PubSubResourceTest(unittest.TestCase):
                                    '')
         d.addCallback(cb)
         return d
-
 
     def test_publish(self):
         """
@@ -3679,7 +3544,6 @@ class PubSubResourceTest(unittest.TestCase):
         d.addCallback(cb)
         return d
 
-
     def test_subscribe(self):
         """
         Non-overridden subscriptions yields unsupported error.
@@ -3696,7 +3560,6 @@ class PubSubResourceTest(unittest.TestCase):
         d.addCallback(cb)
         return d
 
-
     def test_unsubscribe(self):
         """
         Non-overridden unsubscribe yields unsupported error.
@@ -3712,7 +3575,6 @@ class PubSubResourceTest(unittest.TestCase):
         self.assertFailure(d, error.StanzaError)
         d.addCallback(cb)
         return d
-
 
     def test_subscriptions(self):
         """
@@ -3731,7 +3593,6 @@ class PubSubResourceTest(unittest.TestCase):
         d.addCallback(cb)
         return d
 
-
     def test_affiliations(self):
         """
         Non-overridden affiliations yields unsupported error.
@@ -3749,7 +3610,6 @@ class PubSubResourceTest(unittest.TestCase):
         d.addCallback(cb)
         return d
 
-
     def test_create(self):
         """
         Non-overridden create yields unsupported error.
@@ -3765,7 +3625,6 @@ class PubSubResourceTest(unittest.TestCase):
         self.assertFailure(d, error.StanzaError)
         d.addCallback(cb)
         return d
-
 
     def test_default(self):
         """
@@ -3784,7 +3643,6 @@ class PubSubResourceTest(unittest.TestCase):
         d.addCallback(cb)
         return d
 
-
     def test_configureGet(self):
         """
         Non-overridden configureGet yields unsupported
@@ -3802,7 +3660,6 @@ class PubSubResourceTest(unittest.TestCase):
         d.addCallback(cb)
         return d
 
-
     def test_configureSet(self):
         """
         Non-overridden configureSet yields unsupported error.
@@ -3818,7 +3675,6 @@ class PubSubResourceTest(unittest.TestCase):
         self.assertFailure(d, error.StanzaError)
         d.addCallback(cb)
         return d
-
 
     def test_items(self):
         """
@@ -3836,7 +3692,6 @@ class PubSubResourceTest(unittest.TestCase):
         d.addCallback(cb)
         return d
 
-
     def test_retract(self):
         """
         Non-overridden retract yields unsupported error.
@@ -3853,7 +3708,6 @@ class PubSubResourceTest(unittest.TestCase):
         d.addCallback(cb)
         return d
 
-
     def test_purge(self):
         """
         Non-overridden purge yields unsupported error.
@@ -3869,7 +3723,6 @@ class PubSubResourceTest(unittest.TestCase):
         self.assertFailure(d, error.StanzaError)
         d.addCallback(cb)
         return d
-
 
     def test_delete(self):
         """

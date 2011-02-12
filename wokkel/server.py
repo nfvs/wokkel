@@ -35,6 +35,7 @@ from wokkel.compat import XmlStreamServerFactory
 
 NS_DIALBACK = 'jabber:server:dialback'
 
+
 def generateKey(secret, receivingServer, originatingServer, streamID):
     """
     Generate a dialback key for server-to-server XMPP Streams.
@@ -93,7 +94,6 @@ class XMPPServerConnector(SRVConnector):
     def __init__(self, reactor, domain, factory):
         SRVConnector.__init__(self, reactor, 'xmpp-server', domain, factory)
 
-
     def pickServer(self):
         host, port = SRVConnector.pickServer(self)
 
@@ -106,7 +106,6 @@ class XMPPServerConnector(SRVConnector):
 
 class DialbackFailed(Exception):
     pass
-
 
 
 class OriginatingDialbackInitializer(object):
@@ -123,7 +122,6 @@ class OriginatingDialbackInitializer(object):
         self.thisHost = thisHost
         self.otherHost = otherHost
         self.secret = secret
-
 
     def initialize(self):
         self._deferred = defer.Deferred()
@@ -144,7 +142,6 @@ class OriginatingDialbackInitializer(object):
 
         return self._deferred
 
-
     def onResult(self, result):
         self.xmlstream.removeObserver(xmlstream.STREAM_ERROR_EVENT,
                                       self.onStreamError)
@@ -154,12 +151,10 @@ class OriginatingDialbackInitializer(object):
         else:
             self._deferred.errback(DialbackFailed())
 
-
     def onStreamError(self, failure):
         self.xmlstream.removeObserver("/result[@xmlns='%s']" % NS_DIALBACK,
                                       self.onResult)
         self._deferred.errback(failure)
-
 
 
 class ReceivingDialbackInitializer(object):
@@ -178,7 +173,6 @@ class ReceivingDialbackInitializer(object):
         self.originalStreamID = originalStreamID
         self.key = key
 
-
     def initialize(self):
         self._deferred = defer.Deferred()
         self.xmlstream.addObserver(xmlstream.STREAM_ERROR_EVENT,
@@ -194,7 +188,6 @@ class ReceivingDialbackInitializer(object):
 
         self.xmlstream.send(verify)
         return self._deferred
-
 
     def onVerify(self, verify):
         self.xmlstream.removeObserver(xmlstream.STREAM_ERROR_EVENT,
@@ -213,12 +206,10 @@ class ReceivingDialbackInitializer(object):
         else:
             self._deferred.errback(DialbackFailed())
 
-
     def onStreamError(self, failure):
         self.xmlstream.removeObserver("/verify[@xmlns='%s']" % NS_DIALBACK,
                                       self.onVerify)
         self._deferred.errback(failure)
-
 
 
 class XMPPServerConnectAuthenticator(xmlstream.ConnectAuthenticator):
@@ -244,20 +235,17 @@ class XMPPServerConnectAuthenticator(xmlstream.ConnectAuthenticator):
         self.secret = secret
         xmlstream.ConnectAuthenticator.__init__(self, otherHost)
 
-
     def connectionMade(self):
         self.xmlstream.thisEntity = jid.internJID(self.thisHost)
         self.xmlstream.prefixes = {xmlstream.NS_STREAMS: 'stream',
                                    NS_DIALBACK: 'db'}
         xmlstream.ConnectAuthenticator.connectionMade(self)
 
-
     def associateWithStream(self, xs):
         xmlstream.ConnectAuthenticator.associateWithStream(self, xs)
         init = OriginatingDialbackInitializer(xs, self.thisHost,
                                               self.otherHost, self.secret)
         xs.initializers = [init]
-
 
 
 class XMPPServerVerifyAuthenticator(xmlstream.ConnectAuthenticator):
@@ -285,20 +273,17 @@ class XMPPServerVerifyAuthenticator(xmlstream.ConnectAuthenticator):
         self.key = key
         xmlstream.ConnectAuthenticator.__init__(self, otherHost)
 
-
     def connectionMade(self):
         self.xmlstream.thisEntity = jid.internJID(self.thisHost)
         self.xmlstream.prefixes = {xmlstream.NS_STREAMS: 'stream',
                                    NS_DIALBACK: 'db'}
         xmlstream.ConnectAuthenticator.connectionMade(self)
 
-
     def associateWithStream(self, xs):
         xmlstream.ConnectAuthenticator.associateWithStream(self, xs)
         init = ReceivingDialbackInitializer(xs, self.thisHost, self.otherHost,
                                             self.originalStreamID, self.key)
         xs.initializers = [init]
-
 
 
 class XMPPServerListenAuthenticator(xmlstream.ListenAuthenticator):
@@ -326,7 +311,6 @@ class XMPPServerListenAuthenticator(xmlstream.ListenAuthenticator):
         xmlstream.ListenAuthenticator.__init__(self)
         self.service = service
 
-
     def streamStarted(self, rootElement):
         xmlstream.ListenAuthenticator.streamStarted(self, rootElement)
 
@@ -347,9 +331,10 @@ class XMPPServerListenAuthenticator(xmlstream.ListenAuthenticator):
                 self.xmlstream.thisEntity = jid.internJID(domain)
 
         try:
-            if xmlstream.NS_STREAMS != rootElement.uri or \
-               self.namespace != self.xmlstream.namespace or \
-               ('db', NS_DIALBACK) not in rootElement.localPrefixes.iteritems():
+            if (xmlstream.NS_STREAMS != rootElement.uri or
+               self.namespace != self.xmlstream.namespace or
+               ('db', NS_DIALBACK) not in \
+                       rootElement.localPrefixes.iteritems()):
                 raise error.StreamError('invalid-namespace')
 
             if targetDomain and targetDomain not in self.service.domains:
@@ -371,7 +356,6 @@ class XMPPServerListenAuthenticator(xmlstream.ListenAuthenticator):
         if self.xmlstream.version >= (1, 0):
             features = domish.Element((xmlstream.NS_STREAMS, 'features'))
             self.xmlstream.send(features)
-
 
     def onVerify(self, verify):
         try:
@@ -400,7 +384,6 @@ class XMPPServerListenAuthenticator(xmlstream.ListenAuthenticator):
         reply['id'] = streamID
         reply['type'] = validity
         self.xmlstream.send(reply)
-
 
     def onResult(self, result):
         def reply(validity):
@@ -432,7 +415,6 @@ class XMPPServerListenAuthenticator(xmlstream.ListenAuthenticator):
         return d
 
 
-
 class DeferredS2SClientFactory(DeferredXmlStreamFactory):
     """
     Deferred firing factory for initiating XMPP server-to-server connection.
@@ -452,7 +434,6 @@ class DeferredS2SClientFactory(DeferredXmlStreamFactory):
 
         self.serial = 0
 
-
     def onConnectionMade(self, xs):
         xs.serial = self.serial
         self.serial += 1
@@ -468,13 +449,11 @@ class DeferredS2SClientFactory(DeferredXmlStreamFactory):
             xs.rawDataOutFn = logDataOut
 
 
-
 def initiateS2S(factory):
     domain = factory.authenticator.otherHost
     c = XMPPServerConnector(reactor, domain, factory)
     c.connect()
     return factory.deferred
-
 
 
 class XMPPS2SServerFactory(XmlStreamServerFactory):
@@ -500,7 +479,6 @@ class XMPPS2SServerFactory(XmlStreamServerFactory):
 
         self.serial = 0
 
-
     def onConnectionMade(self, xs):
         """
         Called when a server-to-server connection was made.
@@ -522,7 +500,6 @@ class XMPPS2SServerFactory(XmlStreamServerFactory):
 
         xs.addObserver(xmlstream.STREAM_ERROR_EVENT, self.onError)
 
-
     def onAuthenticated(self, xs):
         thisHost = xs.thisEntity.host
         otherHost = xs.otherEntity.host
@@ -534,7 +511,6 @@ class XMPPS2SServerFactory(XmlStreamServerFactory):
                                                    0, xs)
         xs.addObserver('/*', self.onElement, 0, xs)
 
-
     def onConnectionLost(self, xs, reason):
         thisHost = xs.thisEntity.host
         otherHost = xs.otherEntity.host
@@ -542,10 +518,8 @@ class XMPPS2SServerFactory(XmlStreamServerFactory):
         log.msg("Incoming connection %d from %r to %r disconnected" %
                 (xs.serial, otherHost, thisHost))
 
-
     def onError(self, reason):
         log.err(reason, "Stream Error")
-
 
     def onElement(self, xs, element):
         """
@@ -556,7 +530,6 @@ class XMPPS2SServerFactory(XmlStreamServerFactory):
             return
         else:
             self.service.dispatch(xs, element)
-
 
 
 class ServerService(object):
@@ -589,7 +562,6 @@ class ServerService(object):
         self.router.addRoute(None, pipe.sink)
         self.xmlstream.addObserver('/*', self.send)
 
-
     def outgoingInitialized(self, xs):
         thisHost = xs.thisEntity.host
         otherHost = xs.otherEntity.host
@@ -606,7 +578,6 @@ class ServerService(object):
                 xs.send(element)
             del self._outgoingQueues[thisHost, otherHost]
 
-
     def outgoingDisconnected(self, xs):
         thisHost = xs.thisEntity.host
         otherHost = xs.otherEntity.host
@@ -615,7 +586,6 @@ class ServerService(object):
                 (xs.serial, thisHost, otherHost))
 
         del self._outgoingStreams[thisHost, otherHost]
-
 
     def initiateOutgoingStream(self, thisHost, otherHost):
         """
@@ -642,7 +612,6 @@ class ServerService(object):
         d.addBoth(resetConnecting)
         return d
 
-
     def validateConnection(self, thisHost, otherHost, sid, key):
         """
         Validate an incoming XMPP server-to-server connection.
@@ -663,7 +632,6 @@ class ServerService(object):
 
         d = initiateS2S(factory)
         return d
-
 
     def send(self, stanza):
         """
@@ -687,7 +655,6 @@ class ServerService(object):
             self.initiateOutgoingStream(thisHost, otherHost)
         else:
             self._outgoingStreams[(thisHost, otherHost)].send(stanza)
-
 
     def dispatch(self, xs, stanza):
         """

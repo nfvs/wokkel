@@ -27,6 +27,7 @@ IQ_GET = '/iq[@type="get"]'
 DISCO_INFO = IQ_GET + '/query[@xmlns="' + NS_DISCO_INFO + '"]'
 DISCO_ITEMS = IQ_GET + '/query[@xmlns="' + NS_DISCO_ITEMS + '"]'
 
+
 class DiscoFeature(unicode):
     """
     XMPP service discovery feature.
@@ -45,7 +46,6 @@ class DiscoFeature(unicode):
         element['var'] = unicode(self)
         return element
 
-
     @staticmethod
     def fromElement(element):
         """
@@ -58,7 +58,6 @@ class DiscoFeature(unicode):
         featureURI = element.getAttribute('var', u'')
         feature = DiscoFeature(featureURI)
         return feature
-
 
 
 class DiscoIdentity(object):
@@ -78,7 +77,6 @@ class DiscoIdentity(object):
         self.type = idType
         self.name = name
 
-
     def toElement(self):
         """
         Generate a DOM representation.
@@ -94,7 +92,6 @@ class DiscoIdentity(object):
             element['name'] = self.name
         return element
 
-
     @staticmethod
     def fromElement(element):
         """
@@ -109,7 +106,6 @@ class DiscoIdentity(object):
         name = element.getAttribute('name')
         feature = DiscoIdentity(category, idType, name)
         return feature
-
 
 
 class DiscoInfo(object):
@@ -141,13 +137,11 @@ class DiscoInfo(object):
         self.extensions = {}
         self._items = []
 
-
     def __iter__(self):
         """
         Iterator over sequence of items in the order added.
         """
         return iter(self._items)
-
 
     def append(self, item):
         """
@@ -164,7 +158,6 @@ class DiscoInfo(object):
             self.identities[(item.category, item.type)] = item.name
         elif isinstance(item, data_form.Form):
             self.extensions[item.formNamespace] = item
-
 
     def toElement(self):
         """
@@ -184,7 +177,6 @@ class DiscoInfo(object):
             element.addChild(item.toElement())
 
         return element
-
 
     @staticmethod
     def fromElement(element):
@@ -216,7 +208,6 @@ class DiscoInfo(object):
         return info
 
 
-
 class DiscoItem(object):
     """
     XMPP service discovery item.
@@ -234,7 +225,6 @@ class DiscoItem(object):
         self.nodeIdentifier = nodeIdentifier
         self.name = name
 
-
     def toElement(self):
         """
         Generate a DOM representation.
@@ -249,7 +239,6 @@ class DiscoItem(object):
         if self.name:
             element['name'] = self.name
         return element
-
 
     @staticmethod
     def fromElement(element):
@@ -270,7 +259,6 @@ class DiscoItem(object):
         return feature
 
 
-
 class DiscoItems(object):
     """
     XMPP service discovery items.
@@ -285,13 +273,11 @@ class DiscoItems(object):
         self.nodeIdentifier = ''
         self._items = []
 
-
     def __iter__(self):
         """
         Iterator over sequence of items in the order added.
         """
         return iter(self._items)
-
 
     def append(self, item):
         """
@@ -301,7 +287,6 @@ class DiscoItems(object):
         @type item: L{DiscoItem}
         """
         self._items.append(item)
-
 
     def toElement(self):
         """
@@ -321,7 +306,6 @@ class DiscoItems(object):
             element.addChild(item.toElement())
 
         return element
-
 
     @staticmethod
     def fromElement(element):
@@ -345,7 +329,6 @@ class DiscoItems(object):
         return info
 
 
-
 class _DiscoRequest(IQ):
     """
     Element representing an XMPP service discovery request.
@@ -366,7 +349,6 @@ class _DiscoRequest(IQ):
         query = self.addElement((namespace, 'query'))
         if nodeIdentifier:
             query['node'] = nodeIdentifier
-
 
 
 class DiscoClientProtocol(XMPPHandler):
@@ -396,7 +378,6 @@ class DiscoClientProtocol(XMPPHandler):
         d.addCallback(lambda iq: DiscoInfo.fromElement(iq.query))
         return d
 
-
     def requestItems(self, entity, nodeIdentifier='', sender=None):
         """
         Request items discovery from a node.
@@ -420,7 +401,6 @@ class DiscoClientProtocol(XMPPHandler):
         return d
 
 
-
 class DiscoHandler(XMPPHandler, IQHandlerMixin):
     """
     Protocol implementation for XMPP Service Discovery.
@@ -436,7 +416,6 @@ class DiscoHandler(XMPPHandler, IQHandlerMixin):
     def connectionInitialized(self):
         self.xmlstream.addObserver(DISCO_INFO, self.handleRequest)
         self.xmlstream.addObserver(DISCO_ITEMS, self.handleRequest)
-
 
     def _onDiscoInfo(self, iq):
         """
@@ -465,7 +444,6 @@ class DiscoHandler(XMPPHandler, IQHandlerMixin):
         d.addCallback(toResponse)
         return d
 
-
     def _onDiscoItems(self, iq):
         """
         Called for incoming disco items requests.
@@ -489,7 +467,6 @@ class DiscoHandler(XMPPHandler, IQHandlerMixin):
         d = self.items(requestor, target, nodeIdentifier)
         d.addCallback(toResponse)
         return d
-
 
     def _gatherResults(self, deferredList):
         """
@@ -521,7 +498,6 @@ class DiscoHandler(XMPPHandler, IQHandlerMixin):
         d.addCallbacks(cb, eb)
         return d
 
-
     def info(self, requestor, target, nodeIdentifier):
         """
         Inspect all sibling protocol handlers for disco info.
@@ -543,7 +519,6 @@ class DiscoHandler(XMPPHandler, IQHandlerMixin):
               for handler in self.parent
               if IDisco.providedBy(handler)]
         return self._gatherResults(dl)
-
 
     def items(self, requestor, target, nodeIdentifier):
         """

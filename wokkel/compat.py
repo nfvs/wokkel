@@ -6,6 +6,7 @@
 from twisted.internet import protocol
 from twisted.words.protocols.jabber import xmlstream
 
+
 class BootstrapMixin(object):
     """
     XmlStream factory mixin to install bootstrap event observers.
@@ -28,7 +29,6 @@ class BootstrapMixin(object):
     def __init__(self):
         self.bootstraps = []
 
-
     def installBootstraps(self, dispatcher):
         """
         Install registered bootstrap observers.
@@ -38,7 +38,6 @@ class BootstrapMixin(object):
         """
         for event, fn in self.bootstraps:
             dispatcher.addObserver(event, fn)
-
 
     def addBootstrap(self, event, fn):
         """
@@ -50,7 +49,6 @@ class BootstrapMixin(object):
         """
         self.bootstraps.append((event, fn))
 
-
     def removeBootstrap(self, event, fn):
         """
         Remove a bootstrap event handler.
@@ -60,7 +58,6 @@ class BootstrapMixin(object):
         @param fn: The registered observer callable.
         """
         self.bootstraps.remove((event, fn))
-
 
 
 class XmlStreamServerFactory(BootstrapMixin,
@@ -80,7 +77,6 @@ class XmlStreamServerFactory(BootstrapMixin,
         BootstrapMixin.__init__(self)
         self.authenticatorFactory = authenticatorFactory
 
-
     def buildProtocol(self, addr):
         """
         Create an instance of XmlStream.
@@ -93,7 +89,6 @@ class XmlStreamServerFactory(BootstrapMixin,
         xs.factory = self
         self.installBootstraps(xs)
         return xs
-
 
 
 class IQ(xmlstream.IQ):

@@ -18,6 +18,7 @@ from twisted.words.protocols.jabber import client, sasl, xmlstream
 from wokkel import generic
 from wokkel.subprotocols import StreamManager
 
+
 class CheckAuthInitializer(object):
     """
     Check what authentication methods are available.
@@ -79,7 +80,6 @@ def HybridClientFactory(jid, password):
     return xmlstream.XmlStreamFactory(a)
 
 
-
 class XMPPClient(StreamManager, service.Service):
     """
     Service that initiates an XMPP client connection.
@@ -95,19 +95,16 @@ class XMPPClient(StreamManager, service.Service):
 
         StreamManager.__init__(self, factory)
 
-
     def startService(self):
         service.Service.startService(self)
 
         self._connection = self._getConnection()
-
 
     def stopService(self):
         service.Service.stopService(self)
 
         self.factory.stopTrying()
         self._connection.disconnect()
-
 
     def _authd(self, xs):
         """
@@ -120,7 +117,6 @@ class XMPPClient(StreamManager, service.Service):
         self.jid = self.factory.authenticator.jid
         StreamManager._authd(self, xs)
 
-
     def initializationFailed(self, reason):
         """
         Called when stream initialization has failed.
@@ -131,7 +127,6 @@ class XMPPClient(StreamManager, service.Service):
         self.stopService()
         reason.raiseException()
 
-
     def _getConnection(self):
         if self.host:
             return reactor.connectTCP(self.host, self.port, self.factory)
@@ -141,7 +136,6 @@ class XMPPClient(StreamManager, service.Service):
             return c
 
 
-
 class DeferredClientFactory(generic.DeferredXmlStreamFactory):
 
     def __init__(self, jid, password):
@@ -149,13 +143,11 @@ class DeferredClientFactory(generic.DeferredXmlStreamFactory):
         generic.DeferredXmlStreamFactory.__init__(self, authenticator)
         self.streamManager = StreamManager(self)
 
-
     def addHandler(self, handler):
         """
         Add a subprotocol handler to the stream manager.
         """
         self.streamManager.addHandler(handler)
-
 
     def removeHandler(self, handler):
         """
@@ -164,11 +156,9 @@ class DeferredClientFactory(generic.DeferredXmlStreamFactory):
         self.streamManager.removeHandler(handler)
 
 
-
 class XMPPClientConnector(SRVConnector):
     def __init__(self, reactor, domain, factory):
         SRVConnector.__init__(self, reactor, 'xmpp-client', domain, factory)
-
 
     def pickServer(self):
         host, port = SRVConnector.pickServer(self)
@@ -178,7 +168,6 @@ class XMPPClientConnector(SRVConnector):
             port = 5222
 
         return host, port
-
 
 
 def clientCreator(factory):

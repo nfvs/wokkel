@@ -4,6 +4,7 @@
 NS_MOOD = 'http://jabber.org/protocol/mood'
 NS_TUNE = 'http://jabber.org/protocol/tune'
 
+
 class Mood:
     """
     User mood.
@@ -54,6 +55,7 @@ class Mood:
             return None
 
     fromXml = classmethod(fromXml)
+
 
 class Tune:
     """

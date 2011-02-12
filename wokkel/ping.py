@@ -25,6 +25,7 @@ from wokkel import disco, iwokkel
 NS_PING = 'urn:xmpp:ping'
 PING_REQUEST = "/iq[@type='get']/ping[@xmlns='%s']" % NS_PING
 
+
 class PingClientProtocol(XMPPHandler):
     """
     Ping client.
@@ -67,7 +68,6 @@ class PingClientProtocol(XMPPHandler):
         return d
 
 
-
 class PingHandler(XMPPHandler):
     """
     Ping responder.
@@ -85,7 +85,6 @@ class PingHandler(XMPPHandler):
         """
         self.xmlstream.addObserver(PING_REQUEST, self.onPing)
 
-
     def onPing(self, iq):
         """
         Called when a ping request has been received.
@@ -95,7 +94,6 @@ class PingHandler(XMPPHandler):
         response = toResponse(iq, 'result')
         self.xmlstream.send(response)
         iq.handled = True
-
 
     def getDiscoInfo(self, requestor, target, nodeIdentifier=''):
         """
@@ -108,7 +106,6 @@ class PingHandler(XMPPHandler):
             return [disco.DiscoFeature(NS_PING)]
         else:
             return []
-
 
     def getDiscoItems(self, requestor, target, nodeIdentifier=''):
         """

@@ -22,6 +22,7 @@ from wokkel.test.helpers import TestableRequestHandlerMixin, XmlStreamStub
 NS_DISCO_INFO = 'http://jabber.org/protocol/disco#info'
 NS_DISCO_ITEMS = 'http://jabber.org/protocol/disco#items'
 
+
 class DiscoFeatureTest(unittest.TestCase):
     """
     Tests for L{disco.DiscoFeature}.
@@ -33,7 +34,6 @@ class DiscoFeatureTest(unittest.TestCase):
         """
         feature = disco.DiscoFeature(u'testns')
         self.assertEqual(u'testns', feature)
-
 
     def test_toElement(self):
         """
@@ -49,7 +49,6 @@ class DiscoFeatureTest(unittest.TestCase):
         self.assertTrue(element.hasAttribute(u'var'))
         self.assertEqual(u'testns', element[u'var'])
 
-
     def test_fromElement(self):
         """
         Test creating L{disco.DiscoFeature} from L{domish.Element}.
@@ -58,7 +57,6 @@ class DiscoFeatureTest(unittest.TestCase):
         element['var'] = u'testns'
         feature = disco.DiscoFeature.fromElement(element)
         self.assertEqual(u'testns', feature)
-
 
 
 class DiscoIdentityTest(unittest.TestCase):
@@ -75,7 +73,6 @@ class DiscoIdentityTest(unittest.TestCase):
         self.assertEqual(u'text', identity.type)
         self.assertEqual(u'The chatroom', identity.name)
 
-
     def test_toElement(self):
         """
         Test proper rendering to a DOM representation.
@@ -90,7 +87,6 @@ class DiscoIdentityTest(unittest.TestCase):
         self.assertEqual(u'conference', element.getAttribute(u'category'))
         self.assertEqual(u'text', element.getAttribute(u'type'))
         self.assertEqual(u'The chatroom', element.getAttribute(u'name'))
-
 
     def test_toElementWithoutName(self):
         """
@@ -107,7 +103,6 @@ class DiscoIdentityTest(unittest.TestCase):
         self.assertEqual(u'text', element.getAttribute(u'type'))
         self.assertFalse(element.hasAttribute(u'name'))
 
-
     def test_fromElement(self):
         """
         Test creating L{disco.DiscoIdentity} from L{domish.Element}.
@@ -121,7 +116,6 @@ class DiscoIdentityTest(unittest.TestCase):
         self.assertEqual(u'text', identity.type)
         self.assertEqual(u'The chatroom', identity.name)
 
-
     def test_fromElementWithoutName(self):
         """
         Test creating L{disco.DiscoIdentity} from L{domish.Element}, no name.
@@ -133,7 +127,6 @@ class DiscoIdentityTest(unittest.TestCase):
         self.assertEqual(u'conference', identity.category)
         self.assertEqual(u'text', identity.type)
         self.assertEqual(None, identity.name)
-
 
 
 class DiscoInfoTest(unittest.TestCase):
@@ -152,7 +145,6 @@ class DiscoInfoTest(unittest.TestCase):
         self.assertEqual(u'query', element.name)
         self.assertFalse(element.hasAttribute(u'node'))
 
-
     def test_toElementNode(self):
         """
         Test C{toElement} with a node.
@@ -162,7 +154,6 @@ class DiscoInfoTest(unittest.TestCase):
         element = info.toElement()
 
         self.assertEqual(u'test', element.getAttribute(u'node'))
-
 
     def test_toElementChildren(self):
         """
@@ -189,10 +180,9 @@ class DiscoInfoTest(unittest.TestCase):
                                                          data_form.NS_X_DATA)
         self.assertEqual(1, len(list(extensionElements)))
 
-
     def test_fromElement(self):
         """
-        Test properties when creating L{disco.DiscoInfo} from L{domish.Element}.
+        Test properties when creating L{disco.DiscoInfo} from L{domish.Element}
         """
         xml = """<query xmlns='http://jabber.org/protocol/disco#info'>
                    <identity category='conference'
@@ -219,7 +209,6 @@ class DiscoInfoTest(unittest.TestCase):
 
         self.assertIn(u'http://jabber.org/protocol/muc#roominfo',
                       info.extensions)
-
 
     def test_fromElementItems(self):
         """
@@ -254,7 +243,6 @@ class DiscoInfoTest(unittest.TestCase):
         self.assertEqual(u'http://jabber.org/protocol/muc#roominfo',
                          extension.formNamespace)
 
-
     def test_fromElementNoNode(self):
         """
         Test creating L{disco.DiscoInfo} from L{domish.Element}, no node.
@@ -265,7 +253,6 @@ class DiscoInfoTest(unittest.TestCase):
         info = disco.DiscoInfo.fromElement(element)
 
         self.assertEqual(u'', info.nodeIdentifier)
-
 
     def test_fromElementNode(self):
         """
@@ -279,7 +266,6 @@ class DiscoInfoTest(unittest.TestCase):
         info = disco.DiscoInfo.fromElement(element)
 
         self.assertEqual(u'test', info.nodeIdentifier)
-
 
 
 class DiscoItemTest(unittest.TestCase):
@@ -296,7 +282,6 @@ class DiscoItemTest(unittest.TestCase):
         self.assertEqual(u'test', item.nodeIdentifier)
         self.assertEqual(u'The node', item.name)
 
-
     def test_toElement(self):
         """
         Test proper rendering to a DOM representation.
@@ -312,7 +297,6 @@ class DiscoItemTest(unittest.TestCase):
         self.assertEqual(u'test', element.getAttribute(u'node'))
         self.assertEqual(u'The node', element.getAttribute(u'name'))
 
-
     def test_toElementWithoutName(self):
         """
         Test proper rendering to a DOM representation without a name.
@@ -327,7 +311,6 @@ class DiscoItemTest(unittest.TestCase):
         self.assertEqual(u'example.org', element.getAttribute(u'jid'))
         self.assertEqual(u'test', element.getAttribute(u'node'))
         self.assertFalse(element.hasAttribute(u'name'))
-
 
     def test_fromElement(self):
         """
@@ -354,7 +337,6 @@ class DiscoItemTest(unittest.TestCase):
         self.assertEqual(u'', item.nodeIdentifier)
         self.assertEqual(u'The node', item.name)
 
-
     def test_fromElementNoName(self):
         """
         Test creating L{disco.DiscoItem} from L{domish.Element}, no name.
@@ -377,7 +359,6 @@ class DiscoItemTest(unittest.TestCase):
         self.assertIdentical(None, item.entity)
 
 
-
 class DiscoItemsTest(unittest.TestCase):
     """
     Tests for L{disco.DiscoItems}.
@@ -394,7 +375,6 @@ class DiscoItemsTest(unittest.TestCase):
         self.assertEqual(u'query', element.name)
         self.assertFalse(element.hasAttribute(u'node'))
 
-
     def test_toElementNode(self):
         """
         Test C{toElement} with a node.
@@ -404,7 +384,6 @@ class DiscoItemsTest(unittest.TestCase):
         element = items.toElement()
 
         self.assertEqual(u'test', element.getAttribute(u'node'))
-
 
     def test_toElementChildren(self):
         """
@@ -418,7 +397,6 @@ class DiscoItemsTest(unittest.TestCase):
                                                      u'item',
                                                      NS_DISCO_ITEMS)
         self.assertEqual(1, len(list(itemElements)))
-
 
     def test_fromElement(self):
         """
@@ -439,7 +417,6 @@ class DiscoItemsTest(unittest.TestCase):
         self.assertEqual(u'test', item.nodeIdentifier)
         self.assertEqual(u'A node', item.name)
 
-
     def test_fromElementNoNode(self):
         """
         Test creating L{disco.DiscoItems} from L{domish.Element}, no node.
@@ -450,7 +427,6 @@ class DiscoItemsTest(unittest.TestCase):
         items = disco.DiscoItems.fromElement(element)
 
         self.assertEqual(u'', items.nodeIdentifier)
-
 
     def test_fromElementNode(self):
         """
@@ -464,7 +440,6 @@ class DiscoItemsTest(unittest.TestCase):
         items = disco.DiscoItems.fromElement(element)
 
         self.assertEqual(u'test', items.nodeIdentifier)
-
 
 
 class DiscoClientProtocolTest(unittest.TestCase):
@@ -481,7 +456,6 @@ class DiscoClientProtocolTest(unittest.TestCase):
         self.protocol.xmlstream = self.stub.xmlstream
         self.protocol.connectionInitialized()
 
-
     def test_requestItems(self):
         """
         Test request sent out by C{requestItems} and parsing of response.
@@ -491,7 +465,7 @@ class DiscoClientProtocolTest(unittest.TestCase):
             self.assertEqual(2, len(items))
             self.assertEqual(JID(u'test.example.org'), items[0].entity)
 
-        d = self.protocol.requestItems(JID(u'example.org'),u"foo")
+        d = self.protocol.requestItems(JID(u'example.org'), u"foo")
         d.addCallback(cb)
 
         iq = self.stub.output[-1]
@@ -514,7 +488,6 @@ class DiscoClientProtocolTest(unittest.TestCase):
         self.stub.send(response)
         return d
 
-
     def test_requestItemsFrom(self):
         """
         A disco items request can be sent with an explicit sender address.
@@ -531,7 +504,6 @@ class DiscoClientProtocolTest(unittest.TestCase):
 
         return d
 
-
     def test_requestInfo(self):
         """
         Test request sent out by C{requestInfo} and parsing of response.
@@ -543,7 +515,7 @@ class DiscoClientProtocolTest(unittest.TestCase):
             self.assertIn(u'http://jabber.org/protocol/muc',
                           info.features)
 
-        d = self.protocol.requestInfo(JID(u'example.org'),'foo')
+        d = self.protocol.requestInfo(JID(u'example.org'), 'foo')
         d.addCallback(cb)
 
         iq = self.stub.output[-1]
@@ -556,19 +528,18 @@ class DiscoClientProtocolTest(unittest.TestCase):
         query = response.addElement((NS_DISCO_INFO, u'query'))
 
         element = query.addElement(u"identity")
-        element[u'category'] = u'conference' # required
-        element[u'type'] = u'text' # required
-        element[u"name"] = u'Romeo and Juliet, Act II, Scene II' # optional
+        element[u'category'] = u'conference'  # required
+        element[u'type'] = u'text'  # required
+        element[u"name"] = u'Romeo and Juliet, Act II, Scene II'  # optional
 
         element = query.addElement("feature")
-        element[u'var'] = u'http://jabber.org/protocol/disco#info' # required
+        element[u'var'] = u'http://jabber.org/protocol/disco#info'  # required
 
         element = query.addElement(u"feature")
         element[u'var'] = u'http://jabber.org/protocol/muc'
 
         self.stub.send(response)
         return d
-
 
     def test_requestInfoFrom(self):
         """
@@ -587,7 +558,6 @@ class DiscoClientProtocolTest(unittest.TestCase):
         return d
 
 
-
 class DiscoHandlerTest(unittest.TestCase, TestableRequestHandlerMixin):
     """
     Tests for L{disco.DiscoHandler}.
@@ -595,7 +565,6 @@ class DiscoHandlerTest(unittest.TestCase, TestableRequestHandlerMixin):
 
     def setUp(self):
         self.service = disco.DiscoHandler()
-
 
     def test_connectionInitializedObserveInfo(self):
         """
@@ -616,7 +585,6 @@ class DiscoHandlerTest(unittest.TestCase, TestableRequestHandlerMixin):
         self.service.xmlstream.dispatch(parseXml(xml))
         self.assertEqual(1, len(called))
 
-
     def test_connectionInitializedObserveItems(self):
         """
         An observer for Disco Items requests is setup on stream initialization.
@@ -635,7 +603,6 @@ class DiscoHandlerTest(unittest.TestCase, TestableRequestHandlerMixin):
         self.service.connectionInitialized()
         self.service.xmlstream.dispatch(parseXml(xml))
         self.assertEqual(1, len(called))
-
 
     def test_onDiscoInfo(self):
         """
@@ -666,7 +633,8 @@ class DiscoHandlerTest(unittest.TestCase, TestableRequestHandlerMixin):
             self.assertEqual('', nodeIdentifier)
 
             return defer.succeed([
-                disco.DiscoIdentity('dummy', 'generic', 'Generic Dummy Entity'),
+                disco.DiscoIdentity('dummy', 'generic',
+                                    'Generic Dummy Entity'),
                 disco.DiscoFeature('jabber:iq:version')
             ])
 
@@ -674,7 +642,6 @@ class DiscoHandlerTest(unittest.TestCase, TestableRequestHandlerMixin):
         d = self.handleRequest(xml)
         d.addCallback(cb)
         return d
-
 
     def test_onDiscoInfoWithNode(self):
         """
@@ -701,7 +668,6 @@ class DiscoHandlerTest(unittest.TestCase, TestableRequestHandlerMixin):
         d.addCallback(cb)
         return d
 
-
     def test_onDiscoInfoWithNodeNoResults(self):
         """
         An info request for a node with no results returns items-not-found.
@@ -724,7 +690,6 @@ class DiscoHandlerTest(unittest.TestCase, TestableRequestHandlerMixin):
         self.assertFailure(d, StanzaError)
         d.addCallback(cb)
         return d
-
 
     def test_onDiscoItems(self):
         """
@@ -761,7 +726,6 @@ class DiscoHandlerTest(unittest.TestCase, TestableRequestHandlerMixin):
         d.addCallback(cb)
         return d
 
-
     def test_onDiscoItemsWithNode(self):
         """
         An items request for a node should return it in the response.
@@ -786,7 +750,6 @@ class DiscoHandlerTest(unittest.TestCase, TestableRequestHandlerMixin):
         d = self.handleRequest(xml)
         d.addCallback(cb)
         return d
-
 
     def test_info(self):
         """
@@ -814,7 +777,6 @@ class DiscoHandlerTest(unittest.TestCase, TestableRequestHandlerMixin):
         d.addCallback(cb)
         return d
 
-
     def test_infoNotDeferred(self):
         """
         C{info} should gather disco info from sibling handlers.
@@ -841,7 +803,6 @@ class DiscoHandlerTest(unittest.TestCase, TestableRequestHandlerMixin):
         d.addCallback(cb)
         return d
 
-
     def test_items(self):
         """
         C{info} should gather disco items from sibling handlers.
@@ -864,7 +825,6 @@ class DiscoHandlerTest(unittest.TestCase, TestableRequestHandlerMixin):
         d = self.service.items(JID('test@example.com'), JID('example.com'), '')
         d.addCallback(cb)
         return d
-
 
     def test_itemsNotDeferred(self):
         """

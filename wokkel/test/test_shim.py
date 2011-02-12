@@ -13,6 +13,7 @@ from wokkel.generic import parseXml
 
 NS_SHIM = 'http://jabber.org/protocol/shim'
 
+
 class HeadersTest(unittest.TestCase):
     """
     Tests for L{wokkel.shim.headers}.
@@ -34,7 +35,6 @@ class HeadersTest(unittest.TestCase):
         self.assertEquals('Urgency', header['name'])
         self.assertEquals('high', unicode(header))
 
-
     def test_headerRepeated(self):
         """
         Some headers can appear more than once with the same name.
@@ -47,7 +47,6 @@ class HeadersTest(unittest.TestCase):
                            if element['name'] == 'Collection'))
         self.assertIn('node1', collections)
         self.assertIn('node2', collections)
-
 
 
 class ExtractHeadersTest(unittest.TestCase):
@@ -78,7 +77,6 @@ class ExtractHeadersTest(unittest.TestCase):
         headers = shim.extractHeaders(stanza)
         self.assertEquals({'Urgency': ['high'],
                            'Collection': ['node1']}, headers)
-
 
     def test_headersRepeated(self):
         """

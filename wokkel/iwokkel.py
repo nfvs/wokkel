@@ -7,6 +7,7 @@ Wokkel interfaces.
 
 from zope.interface import Attribute, Interface
 
+
 class IXMPPHandler(Interface):
     """
     Interface for XMPP protocol handlers.
@@ -25,14 +26,12 @@ class IXMPPHandler(Interface):
         @type parent: L{IXMPPHandlerCollection}
         """
 
-
     def disownHandlerParent(parent):
         """
         Remove the parent of the handler.
 
         @type parent: L{IXMPPHandlerCollection}
         """
-
 
     def makeConnection(xs):
         """
@@ -47,7 +46,6 @@ class IXMPPHandler(Interface):
         @type xs: L{XmlStream<twisted.words.protocols.jabber.XmlStream>}
         """
 
-
     def connectionMade():
         """
         Called after a connection has been established.
@@ -56,7 +54,6 @@ class IXMPPHandler(Interface):
         authenticator or the stream manager prior to stream initialization
         (including authentication).
         """
-
 
     def connectionInitialized():
         """
@@ -67,7 +64,6 @@ class IXMPPHandler(Interface):
         used to setup observers for incoming stanzas.
         """
 
-
     def connectionLost(reason):
         """
         The XML stream has been closed.
@@ -77,7 +73,6 @@ class IXMPPHandler(Interface):
 
         @type reason: L{twisted.python.failure.Failure}
         """
-
 
 
 class IXMPPHandlerCollection(Interface):
@@ -92,7 +87,6 @@ class IXMPPHandlerCollection(Interface):
         Get an iterator over all child handlers.
         """
 
-
     def addHandler(handler):
         """
         Add a child handler.
@@ -100,14 +94,12 @@ class IXMPPHandlerCollection(Interface):
         @type handler: L{IXMPPHandler}
         """
 
-
     def removeHandler(handler):
         """
         Remove a child handler.
 
         @type handler: L{IXMPPHandler}
         """
-
 
 
 class IDisco(Interface):
@@ -158,7 +150,6 @@ class IPubSubClient(Interface):
         @type event: L{ItemsEvent<wokkel.pubsub.ItemsEvent>}
         """
 
-
     def deleteReceived(event):
         """
         Called when a deletion notification has been received for a node.
@@ -166,7 +157,6 @@ class IPubSubClient(Interface):
         @param event: The items event.
         @type event: L{ItemsEvent<wokkel.pubsub.DeleteEvent>}
         """
-
 
     def purgeReceived(event):
         """
@@ -277,7 +267,6 @@ class IPubSubService(Interface):
                              L{Subscription<wokkel.pubsub.Subscription>},
                              C{list} of L{domish.Element})
         """
-
 
     def notifyDelete(service, nodeIdentifier, subscribers,
                      redirectURI=None):
@@ -531,7 +520,6 @@ class IPubSubService(Interface):
         """
 
 
-
 class IPubSubResource(Interface):
 
     def locateResource(request):
@@ -541,7 +529,6 @@ class IPubSubResource(Interface):
         @param request: The publish-subscribe request.
         @type request: L{wokkel.pubsub.PubSubRequest}
         """
-
 
     def getInfo(requestor, service, nodeIdentifier):
         """
@@ -560,7 +547,6 @@ class IPubSubResource(Interface):
         @rtype: L{defer.Deferred}
         """
 
-
     def getNodes(requestor, service, nodeIdentifier):
         """
         Get all nodes contained by this node.
@@ -569,12 +555,11 @@ class IPubSubResource(Interface):
         @type requestor: L{jid.JID}
         @param service: The publish-subscribe service entity.
         @type service: L{jid.JID}
-        @param nodeIdentifier: Identifier of the node to request the childs for.
+        @param nodeIdentifier: Identifier of the node to request the childs for
         @type nodeIdentifier: L{unicode}
         @return: A deferred that fires with a list of child node identifiers.
         @rtype: L{defer.Deferred}
         """
-
 
     def getConfigurationOptions():
         """
@@ -611,7 +596,6 @@ class IPubSubResource(Interface):
         @rtype: C{dict}.
         """
 
-
     def publish(request):
         """
         Called when a publish request has been received.
@@ -621,7 +605,6 @@ class IPubSubResource(Interface):
         @return: deferred that fires on success.
         @rtype: L{defer.Deferred}
         """
-
 
     def subscribe(request):
         """
@@ -634,7 +617,6 @@ class IPubSubResource(Interface):
         @rtype: L{defer.Deferred}
         """
 
-
     def unsubscribe(request):
         """
         Called when a subscribe request has been received.
@@ -646,7 +628,6 @@ class IPubSubResource(Interface):
         @rtype: L{defer.Deferred}
         """
 
-
     def subscriptions(request):
         """
         Called when a subscriptions retrieval request has been received.
@@ -657,7 +638,6 @@ class IPubSubResource(Interface):
                  L{Subscription<wokkel.pubsub.Subscription>}.
         @rtype: L{defer.Deferred}
         """
-
 
     def affiliations(request):
         """
@@ -672,7 +652,6 @@ class IPubSubResource(Interface):
         @rtype: L{defer.Deferred}
         """
 
-
     def create(request):
         """
         Called when a node creation request has been received.
@@ -683,7 +662,6 @@ class IPubSubResource(Interface):
                  the identifier of the new node.
         @rtype: L{defer.Deferred}
         """
-
 
     def default(request):
         """
@@ -698,7 +676,6 @@ class IPubSubResource(Interface):
         @rtype: L{defer.Deferred}
         """
 
-
     def configureGet(request):
         """
         Called when a node configuration retrieval request has been received.
@@ -711,7 +688,6 @@ class IPubSubResource(Interface):
         @rtype: L{defer.Deferred}
         """
 
-
     def configureSet(request):
         """
         Called when a node configuration change request has been received.
@@ -723,7 +699,6 @@ class IPubSubResource(Interface):
         @rtype: L{defer.Deferred}
         """
 
-
     def items(request):
         """
         Called when a items retrieval request has been received.
@@ -733,7 +708,6 @@ class IPubSubResource(Interface):
         @return: A deferred that fires with a C{list} of L{pubsub.Item}.
         @rtype: L{defer.Deferred}
         """
-
 
     def retract(request):
         """
@@ -746,7 +720,6 @@ class IPubSubResource(Interface):
         @rtype: L{defer.Deferred}
         """
 
-
     def purge(request):
         """
         Called when a node purge request has been received.
@@ -757,7 +730,6 @@ class IPubSubResource(Interface):
                  purged.
         @rtype: L{defer.Deferred}
         """
-
 
     def delete(request):
         """

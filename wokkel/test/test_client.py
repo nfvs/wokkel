@@ -21,6 +21,7 @@ except ImportError:
 from wokkel import client
 from wokkel.test.test_compat import BootstrapMixinTest
 
+
 class XMPPClientTest(unittest.TestCase):
     """
     Tests for L{client.XMPPClient}.
@@ -29,13 +30,11 @@ class XMPPClientTest(unittest.TestCase):
     def setUp(self):
         self.client = client.XMPPClient(JID('user@example.org'), 'secret')
 
-
     def test_jid(self):
         """
         Make sure the JID we pass is stored on the client.
         """
         self.assertEquals(JID('user@example.org'), self.client.jid)
-
 
     def test_jidWhenInitialized(self):
         """
@@ -47,7 +46,6 @@ class XMPPClientTest(unittest.TestCase):
         self.assertEquals(JID('user@example.org/test'), self.client.jid)
 
 
-
 class DeferredClientFactoryTest(BootstrapMixinTest):
     """
     Tests for L{client.DeferredClientFactory}.
@@ -56,7 +54,6 @@ class DeferredClientFactoryTest(BootstrapMixinTest):
     def setUp(self):
         self.factory = client.DeferredClientFactory(JID('user@example.org'),
                                                     'secret')
-
 
     def test_buildProtocol(self):
         """
@@ -70,7 +67,6 @@ class DeferredClientFactoryTest(BootstrapMixinTest):
         self.assertIsInstance(xs, xmlstream.XmlStream)
         self.assertIsInstance(xs.authenticator, XMPPAuthenticator)
 
-
     def test_deferredOnInitialized(self):
         """
         Test the factory's deferred on stream initialization.
@@ -79,7 +75,6 @@ class DeferredClientFactoryTest(BootstrapMixinTest):
         xs = self.factory.buildProtocol(None)
         xs.dispatch(xs, STREAM_AUTHD_EVENT)
         return self.factory.deferred
-
 
     def test_deferredOnNotInitialized(self):
         """
@@ -94,7 +89,6 @@ class DeferredClientFactoryTest(BootstrapMixinTest):
         self.assertFailure(self.factory.deferred, TestException)
         return self.factory.deferred
 
-
     def test_deferredOnConnectionFailure(self):
         """
         Test the factory's deferred on connection faulure.
@@ -108,7 +102,6 @@ class DeferredClientFactoryTest(BootstrapMixinTest):
         self.assertFailure(self.factory.deferred, TestException)
         return self.factory.deferred
 
-
     def test_addHandler(self):
         """
         Test the addition of a protocol handler.
@@ -117,7 +110,6 @@ class DeferredClientFactoryTest(BootstrapMixinTest):
         handler.setHandlerParent(self.factory.streamManager)
         self.assertIn(handler, self.factory.streamManager)
         self.assertIdentical(self.factory.streamManager, handler.parent)
-
 
     def test_removeHandler(self):
         """
@@ -128,7 +120,6 @@ class DeferredClientFactoryTest(BootstrapMixinTest):
         handler.disownHandlerParent(self.factory.streamManager)
         self.assertNotIn(handler, self.factory.streamManager)
         self.assertIdentical(None, handler.parent)
-
 
 
 class ClientCreatorTest(unittest.TestCase):

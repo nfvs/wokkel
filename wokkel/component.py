@@ -31,6 +31,7 @@ from wokkel.subprotocols import StreamManager
 
 NS_COMPONENT_ACCEPT = 'jabber:component:accept'
 
+
 class Component(StreamManager, service.Service):
     def __init__(self, host, port, jid, password):
         self.host = host
@@ -77,7 +78,6 @@ class Component(StreamManager, service.Service):
         return reactor.connectTCP(self.host, self.port, self.factory)
 
 
-
 class InternalComponent(XMPPHandlerCollection, service.Service):
     """
     Component service that connects directly to a router.
@@ -116,7 +116,6 @@ class InternalComponent(XMPPHandlerCollection, service.Service):
             e.makeConnection(self.xmlstream)
             e.connectionInitialized()
 
-
     def stopService(self):
         """
         Disconnect from the router and handlers.
@@ -132,7 +131,6 @@ class InternalComponent(XMPPHandlerCollection, service.Service):
         for e in self:
             e.connectionLost(None)
 
-
     def addHandler(self, handler):
         """
         Add a new handler and connect it to the stream.
@@ -143,13 +141,11 @@ class InternalComponent(XMPPHandlerCollection, service.Service):
             handler.makeConnection(self.xmlstream)
             handler.connectionInitialized()
 
-
     def send(self, obj):
         """
         Send data to the XML stream, so it ends up at the router.
         """
         self.xmlstream.send(obj)
-
 
 
 class ListenComponentAuthenticator(xmlstream.ListenAuthenticator):
@@ -166,7 +162,6 @@ class ListenComponentAuthenticator(xmlstream.ListenAuthenticator):
         self.secret = secret
         xmlstream.ListenAuthenticator.__init__(self)
 
-
     def associateWithStream(self, xs):
         """
         Associate the authenticator with a stream.
@@ -176,7 +171,6 @@ class ListenComponentAuthenticator(xmlstream.ListenAuthenticator):
         """
         xs.version = (0, 0)
         xmlstream.ListenAuthenticator.associateWithStream(self, xs)
-
 
     def streamStarted(self, rootElement):
         """
@@ -210,7 +204,6 @@ class ListenComponentAuthenticator(xmlstream.ListenAuthenticator):
         self.xmlstream.sendHeader()
         self.xmlstream.addOnetimeObserver('/*', self.onElement)
 
-
     def onElement(self, element):
         """
         Called on incoming XML Stanzas.
@@ -225,7 +218,6 @@ class ListenComponentAuthenticator(xmlstream.ListenAuthenticator):
         else:
             exc = error.StreamError('not-authorized')
             self.xmlstream.sendStreamError(exc)
-
 
     def onHandshake(self, handshake):
         """
@@ -245,7 +237,6 @@ class ListenComponentAuthenticator(xmlstream.ListenAuthenticator):
             self.xmlstream.send('<handshake/>')
             self.xmlstream.dispatch(self.xmlstream,
                                     xmlstream.STREAM_AUTHD_EVENT)
-
 
 
 class Router(object):
@@ -271,7 +262,6 @@ class Router(object):
     def __init__(self):
         self.routes = {}
 
-
     def addRoute(self, destination, xs):
         """
         Add a new route.
@@ -289,7 +279,6 @@ class Router(object):
         self.routes[destination] = xs
         xs.addObserver('/*', self.route)
 
-
     def removeRoute(self, destination, xs):
         """
         Remove a route.
@@ -302,7 +291,6 @@ class Router(object):
         xs.removeObserver('/*', self.route)
         if (xs == self.routes[destination]):
             del self.routes[destination]
-
 
     def route(self, stanza):
         """
@@ -319,7 +307,6 @@ class Router(object):
             self.routes[destination.host].send(stanza)
         else:
             self.routes[None].send(stanza)
-
 
 
 class XMPPComponentServerFactory(XmlStreamServerFactory):
@@ -348,7 +335,6 @@ class XMPPComponentServerFactory(XmlStreamServerFactory):
 
         self.serial = 0
 
-
     def makeConnection(self, xs):
         """
         Called when a component connection was made.
@@ -370,7 +356,6 @@ class XMPPComponentServerFactory(XmlStreamServerFactory):
 
         xs.addObserver(xmlstream.STREAM_ERROR_EVENT, self.onError)
 
-
     def connectionInitialized(self, xs):
         """
         Called when a component has succesfully authenticated.
@@ -384,10 +369,8 @@ class XMPPComponentServerFactory(XmlStreamServerFactory):
         xs.addObserver(xmlstream.STREAM_END_EVENT, self.connectionLost, 0,
                                                    destination, xs)
 
-
     def onError(self, reason):
         log.err(reason, "Stream Error")
-
 
     def connectionLost(self, destination, xs, reason):
         self.router.removeRoute(destination, xs)

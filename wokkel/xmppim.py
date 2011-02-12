@@ -22,6 +22,7 @@ from wokkel.subprotocols import XMPPHandler
 NS_XML = 'http://www.w3.org/XML/1998/namespace'
 NS_ROSTER = 'jabber:iq:roster'
 
+
 class Presence(domish.Element):
     def __init__(self, to=None, type=None):
         domish.Element.__init__(self, (None, "presence"))
@@ -30,6 +31,7 @@ class Presence(domish.Element):
 
         if to is not None:
             self["to"] = to.full()
+
 
 class AvailablePresence(Presence):
     def __init__(self, to=None, show=None, statuses=None, priority=0):
@@ -47,6 +49,7 @@ class AvailablePresence(Presence):
         if priority != 0:
             self.addElement('priority', content=unicode(int(priority)))
 
+
 class UnavailablePresence(Presence):
     def __init__(self, to=None, statuses=None):
         Presence.__init__(self, to, type='unavailable')
@@ -56,6 +59,7 @@ class UnavailablePresence(Presence):
                 s = self.addElement('status', content=status)
                 if lang:
                     s[(NS_XML, "lang")] = lang
+
 
 class PresenceClientProtocol(XMPPHandler):
 
@@ -114,7 +118,6 @@ class PresenceClientProtocol(XMPPHandler):
 
     def _onPresenceUnsubscribe(self, presence):
         self.unsubscribeReceived(JID(presence["from"]))
-
 
     def availableReceived(self, entity, show=None, statuses=None, priority=0):
         """
@@ -249,13 +252,11 @@ class PresenceClientProtocol(XMPPHandler):
         self.send(Presence(to=entity, type='unsubscribed'))
 
 
-
 class BasePresence(Stanza):
     """
     Stanza of kind presence.
     """
     stanzaKind = 'presence'
-
 
 
 class AvailabilityPresence(BasePresence):
@@ -295,18 +296,15 @@ class AvailabilityPresence(BasePresence):
             self.statuses[None] = status
         self.priority = priority
 
-
     def _childParser_show(self, element):
         show = unicode(element)
         if show in ('chat', 'away', 'xa', 'dnd'):
             self.show = show
 
-
     def _childParser_status(self, element):
         lang = element.getAttribute((NS_XML, 'lang'), None)
         text = unicode(element)
         self.statuses[lang] = text
-
 
     def _childParser_priority(self, element):
         try:
@@ -314,13 +312,11 @@ class AvailabilityPresence(BasePresence):
         except ValueError:
             pass
 
-
     def parseElement(self, element):
         BasePresence.parseElement(self, element)
 
         if self.stanzaType == 'unavailable':
             self.available = False
-
 
     def toElement(self):
         if not self.available:
@@ -342,7 +338,6 @@ class AvailabilityPresence(BasePresence):
         return presence
 
 
-
 class SubscriptionPresence(BasePresence):
     """
     Presence subscription request or response.
@@ -357,14 +352,12 @@ class SubscriptionPresence(BasePresence):
     """
 
 
-
 class ProbePresence(BasePresence):
     """
     Presence probe request.
     """
 
     stanzaType = 'probe'
-
 
 
 class PresenceProtocol(XMPPHandler):
@@ -390,7 +383,6 @@ class PresenceProtocol(XMPPHandler):
     def connectionInitialized(self):
         self.xmlstream.addObserver("/presence", self._onPresence)
 
-
     def _onPresence(self, element):
         stanza = Stanza.fromElement(element)
 
@@ -410,13 +402,11 @@ class PresenceProtocol(XMPPHandler):
         else:
             handler(presence)
 
-
     def errorReceived(self, presence):
         """
         Error presence was received.
         """
         pass
-
 
     def availableReceived(self, presence):
         """
@@ -424,13 +414,11 @@ class PresenceProtocol(XMPPHandler):
         """
         pass
 
-
     def unavailableReceived(self, presence):
         """
         Unavailable presence was received.
         """
         pass
-
 
     def subscribedReceived(self, presence):
         """
@@ -438,13 +426,11 @@ class PresenceProtocol(XMPPHandler):
         """
         pass
 
-
     def unsubscribedReceived(self, presence):
         """
         Unsubscription confirmation was received.
         """
         pass
-
 
     def subscribeReceived(self, presence):
         """
@@ -452,20 +438,17 @@ class PresenceProtocol(XMPPHandler):
         """
         pass
 
-
     def unsubscribeReceived(self, presence):
         """
         Unsubscription request was received.
         """
         pass
 
-
     def probeReceived(self, presence):
         """
         Probe presence was received.
         """
         pass
-
 
     def available(self, recipient=None, show=None, statuses=None, priority=0,
                         status=None, sender=None):
@@ -493,7 +476,6 @@ class PresenceProtocol(XMPPHandler):
                                         status=status, priority=priority)
         self.send(presence.toElement())
 
-
     def unavailable(self, recipient=None, statuses=None, sender=None):
         """
         Send unavailable presence.
@@ -510,7 +492,6 @@ class PresenceProtocol(XMPPHandler):
                                         available=False, statuses=statuses)
         self.send(presence.toElement())
 
-
     def subscribe(self, recipient, sender=None):
         """
         Send subscription request
@@ -521,7 +502,6 @@ class PresenceProtocol(XMPPHandler):
         presence = SubscriptionPresence(recipient=recipient, sender=sender)
         presence.stanzaType = 'subscribe'
         self.send(presence.toElement())
-
 
     def unsubscribe(self, recipient, sender=None):
         """
@@ -534,7 +514,6 @@ class PresenceProtocol(XMPPHandler):
         presence.stanzaType = 'unsubscribe'
         self.send(presence.toElement())
 
-
     def subscribed(self, recipient, sender=None):
         """
         Send subscription confirmation.
@@ -545,7 +524,6 @@ class PresenceProtocol(XMPPHandler):
         presence = SubscriptionPresence(recipient=recipient, sender=sender)
         presence.stanzaType = 'subscribed'
         self.send(presence.toElement())
-
 
     def unsubscribed(self, recipient, sender=None):
         """
@@ -558,7 +536,6 @@ class PresenceProtocol(XMPPHandler):
         presence.stanzaType = 'unsubscribed'
         self.send(presence.toElement())
 
-
     def probe(self, recipient, sender=None):
         """
         Send presence probe.
@@ -568,7 +545,6 @@ class PresenceProtocol(XMPPHandler):
         """
         presence = ProbePresence(recipient=recipient, sender=sender)
         self.send(presence.toElement())
-
 
 
 class RosterItem(object):
@@ -651,7 +627,6 @@ class RosterClientProtocol(XMPPHandler):
         d.addCallback(processRoster)
         return d
 
-
     def removeItem(self, entity):
         """
         Remove an item from the contact list.
@@ -666,7 +641,6 @@ class RosterClientProtocol(XMPPHandler):
         item['jid'] = entity.full()
         item['subscription'] = 'remove'
         return iq.send()
-
 
     def _onRosterSet(self, iq):
         if iq.handled or \
@@ -698,6 +672,7 @@ class RosterClientProtocol(XMPPHandler):
         @param entity: The entity for which the roster item has been removed.
         @type entity: L{JID}
         """
+
 
 class MessageProtocol(XMPPHandler):
     """

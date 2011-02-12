@@ -18,6 +18,7 @@ from twisted.words.xish.domish import IElement
 
 from wokkel.iwokkel import IXMPPHandler, IXMPPHandlerCollection
 
+
 class XMPPHandler(object):
     """
     XMPP protocol handler.
@@ -32,21 +33,17 @@ class XMPPHandler(object):
         self.parent = None
         self.xmlstream = None
 
-
     def setHandlerParent(self, parent):
         self.parent = parent
         self.parent.addHandler(self)
-
 
     def disownHandlerParent(self, parent):
         self.parent.removeHandler(self)
         self.parent = None
 
-
     def makeConnection(self, xs):
         self.xmlstream = xs
         self.connectionMade()
-
 
     def connectionMade(self):
         """
@@ -54,7 +51,6 @@ class XMPPHandler(object):
 
         Can be overridden to perform work before stream initialization.
         """
-
 
     def connectionInitialized(self):
         """
@@ -64,7 +60,6 @@ class XMPPHandler(object):
         set up observers and start exchanging XML stanzas.
         """
 
-
     def connectionLost(self, reason):
         """
         The XML stream has been closed.
@@ -73,7 +68,6 @@ class XMPPHandler(object):
         act on it.
         """
         self.xmlstream = None
-
 
     def send(self, obj):
         """
@@ -93,7 +87,6 @@ class XMPPHandler(object):
         self.parent.send(obj)
 
 
-
 class XMPPHandlerCollection(object):
     """
     Collection of XMPP subprotocol handlers.
@@ -111,13 +104,11 @@ class XMPPHandlerCollection(object):
     def __init__(self):
         self.handlers = []
 
-
     def __iter__(self):
         """
         Act as a container for handlers.
         """
         return iter(self.handlers)
-
 
     def addHandler(self, handler):
         """
@@ -127,13 +118,11 @@ class XMPPHandlerCollection(object):
         """
         self.handlers.append(handler)
 
-
     def removeHandler(self, handler):
         """
         Remove protocol handler.
         """
         self.handlers.remove(handler)
-
 
 
 class StreamManager(XMPPHandlerCollection):
@@ -153,7 +142,7 @@ class StreamManager(XMPPHandlerCollection):
                         been initialized. This is used when caching outgoing
                         stanzas.
     @type _initialized: C{bool}
-    @ivar _packetQueue: internal buffer of unsent data. See L{send} for details.
+    @ivar _packetQueue: internal buffer of unsent data. See L{send} for details
     @type _packetQueue: L{list}
     """
 
@@ -172,7 +161,6 @@ class StreamManager(XMPPHandlerCollection):
         factory.addBootstrap(xmlstream.STREAM_END_EVENT, self._disconnected)
         self.factory = factory
 
-
     def addHandler(self, handler):
         """
         Add protocol handler.
@@ -187,7 +175,6 @@ class StreamManager(XMPPHandlerCollection):
         if self.xmlstream and self._initialized:
             handler.makeConnection(self.xmlstream)
             handler.connectionInitialized()
-
 
     def _connected(self, xs):
         """
@@ -212,7 +199,6 @@ class StreamManager(XMPPHandlerCollection):
         for e in self:
             e.makeConnection(xs)
 
-
     def _authd(self, xs):
         """
         Called when the stream has been initialized.
@@ -231,7 +217,6 @@ class StreamManager(XMPPHandlerCollection):
         for e in self:
             e.connectionInitialized()
 
-
     def initializationFailed(self, reason):
         """
         Called when stream initialization has failed.
@@ -244,7 +229,6 @@ class StreamManager(XMPPHandlerCollection):
                        failed.
         @type reason: L{failure.Failure}
         """
-
 
     def _disconnected(self, _):
         """
@@ -262,7 +246,6 @@ class StreamManager(XMPPHandlerCollection):
         for e in self:
             e.connectionLost(None)
 
-
     def send(self, obj):
         """
         Send data over the XML stream.
@@ -277,7 +260,6 @@ class StreamManager(XMPPHandlerCollection):
             self.xmlstream.send(obj)
         else:
             self._packetQueue.append(obj)
-
 
 
 class IQHandlerMixin(object):

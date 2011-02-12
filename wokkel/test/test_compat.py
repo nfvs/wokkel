@@ -15,6 +15,7 @@ from twisted.words.xish import utility
 from twisted.words.protocols.jabber import xmlstream
 from wokkel.compat import BootstrapMixin, IQ, XmlStreamServerFactory
 
+
 class DummyProtocol(protocol.Protocol, utility.EventDispatcher):
     """
     I am a protocol with an event dispatcher without further processing.
@@ -31,7 +32,6 @@ class DummyProtocol(protocol.Protocol, utility.EventDispatcher):
         utility.EventDispatcher.__init__(self)
 
 
-
 class BootstrapMixinTest(unittest.TestCase):
     """
     Tests for L{BootstrapMixin}.
@@ -41,7 +41,6 @@ class BootstrapMixinTest(unittest.TestCase):
 
     def setUp(self):
         self.factory = BootstrapMixin()
-
 
     def test_installBootstraps(self):
         """
@@ -58,7 +57,6 @@ class BootstrapMixinTest(unittest.TestCase):
 
         dispatcher.dispatch(None, '//event/myevent')
         self.assertEquals(1, len(called))
-
 
     def test_addAndRemoveBootstrap(self):
         """
@@ -78,7 +76,6 @@ class BootstrapMixinTest(unittest.TestCase):
 
         dispatcher.dispatch(None, '//event/myevent')
         self.assertFalse(called)
-
 
 
 class XmlStreamServerFactoryTest(BootstrapMixinTest):
@@ -102,13 +99,11 @@ class XmlStreamServerFactoryTest(BootstrapMixinTest):
 
         self.factory = XmlStreamServerFactory(authenticatorFactory)
 
-
     def test_interface(self):
         """
         L{XmlStreamServerFactory} is a L{Factory}.
         """
         verifyObject(IProtocolFactory, self.factory)
-
 
     def test_buildProtocolAuthenticatorInstantiation(self):
         """
@@ -123,14 +118,12 @@ class XmlStreamServerFactoryTest(BootstrapMixinTest):
         xs = self.factory.buildProtocol(None)
         self.assertEquals([xs], xs.authenticator.xmlstreams)
 
-
     def test_buildProtocolXmlStream(self):
         """
         The protocol factory creates Jabber XML Stream protocols by default.
         """
         xs = self.factory.buildProtocol(None)
         self.assertIsInstance(xs, xmlstream.XmlStream)
-
 
     def test_buildProtocolTwice(self):
         """
@@ -141,7 +134,6 @@ class XmlStreamServerFactoryTest(BootstrapMixinTest):
         xs2 = self.factory.buildProtocol(None)
         self.assertNotIdentical(xs1, xs2)
         self.assertNotIdentical(xs1.authenticator, xs2.authenticator)
-
 
     def test_buildProtocolInstallsBootstraps(self):
         """
@@ -159,7 +151,6 @@ class XmlStreamServerFactoryTest(BootstrapMixinTest):
 
         self.assertEquals(1, len(called))
 
-
     def test_buildProtocolStoresFactory(self):
         """
         The protocol factory is saved in the protocol.
@@ -168,15 +159,14 @@ class XmlStreamServerFactoryTest(BootstrapMixinTest):
         self.assertIdentical(self.factory, xs.factory)
 
 
-
 class FakeReactor(object):
 
     implements(IReactorTime)
+
     def __init__(self):
         self.clock = task.Clock()
         self.callLater = self.clock.callLater
         self.getDelayedCalls = self.clock.getDelayedCalls
-
 
 
 class IQTest(unittest.TestCase):
@@ -187,7 +177,6 @@ class IQTest(unittest.TestCase):
     def setUp(self):
         self.reactor = FakeReactor()
         self.clock = self.reactor.clock
-
 
     def testRequestTimingOutEventDispatcher(self):
         """

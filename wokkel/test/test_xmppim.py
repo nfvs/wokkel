@@ -18,6 +18,7 @@ from wokkel.test.helpers import XmlStreamStub
 NS_XML = 'http://www.w3.org/XML/1998/namespace'
 NS_ROSTER = 'jabber:iq:roster'
 
+
 class PresenceClientProtocolTest(unittest.TestCase):
     def setUp(self):
         self.output = []
@@ -78,7 +79,6 @@ class PresenceClientProtocolTest(unittest.TestCase):
         self.assertEquals("unavailable", presence.getAttribute('type'))
 
 
-
 class AvailabilityPresenceTest(unittest.TestCase):
 
     def test_fromElement(self):
@@ -110,10 +110,8 @@ class PresenceProtocolTest(unittest.TestCase):
         self.protocol.xmlstream = utility.EventDispatcher()
         self.protocol.connectionInitialized()
 
-
     def send(self, obj):
         self.output.append(obj)
-
 
     def test_errorReceived(self):
         """
@@ -135,7 +133,6 @@ class PresenceProtocolTest(unittest.TestCase):
         self.protocol.xmlstream.dispatch(parseXml(xml))
         return d
 
-
     def test_availableReceived(self):
         """
         Incoming presence stanzas are parsed and dispatched.
@@ -156,7 +153,6 @@ class PresenceProtocolTest(unittest.TestCase):
         self.protocol.xmlstream.dispatch(parseXml(xml))
         return d
 
-
     def test_unavailableReceived(self):
         """
         Incoming presence stanzas are parsed and dispatched.
@@ -164,7 +160,8 @@ class PresenceProtocolTest(unittest.TestCase):
         xml = """<presence type='unavailable'/>"""
 
         def unavailableReceived(presence):
-            xmppim.PresenceProtocol.unavailableReceived(self.protocol, presence)
+            xmppim.PresenceProtocol.unavailableReceived(self.protocol,
+                                                        presence)
             try:
                 self.assertIsInstance(presence, xmppim.AvailabilityPresence)
             except:
@@ -176,7 +173,6 @@ class PresenceProtocolTest(unittest.TestCase):
         self.protocol.unavailableReceived = unavailableReceived
         self.protocol.xmlstream.dispatch(parseXml(xml))
         return d
-
 
     def test_subscribeReceived(self):
         """
@@ -198,7 +194,6 @@ class PresenceProtocolTest(unittest.TestCase):
         self.protocol.xmlstream.dispatch(parseXml(xml))
         return d
 
-
     def test_unsubscribeReceived(self):
         """
         Incoming presence stanzas are parsed and dispatched.
@@ -206,7 +201,8 @@ class PresenceProtocolTest(unittest.TestCase):
         xml = """<presence type='unsubscribe'/>"""
 
         def unsubscribeReceived(presence):
-            xmppim.PresenceProtocol.unsubscribeReceived(self.protocol, presence)
+            xmppim.PresenceProtocol.unsubscribeReceived(self.protocol,
+                                                        presence)
             try:
                 self.assertIsInstance(presence, xmppim.SubscriptionPresence)
             except:
@@ -218,7 +214,6 @@ class PresenceProtocolTest(unittest.TestCase):
         self.protocol.unsubscribeReceived = unsubscribeReceived
         self.protocol.xmlstream.dispatch(parseXml(xml))
         return d
-
 
     def test_subscribedReceived(self):
         """
@@ -240,7 +235,6 @@ class PresenceProtocolTest(unittest.TestCase):
         self.protocol.xmlstream.dispatch(parseXml(xml))
         return d
 
-
     def test_unsubscribedReceived(self):
         """
         Incoming presence stanzas are parsed and dispatched.
@@ -261,7 +255,6 @@ class PresenceProtocolTest(unittest.TestCase):
         self.protocol.unsubscribedReceived = unsubscribedReceived
         self.protocol.xmlstream.dispatch(parseXml(xml))
         return d
-
 
     def test_probeReceived(self):
         """
@@ -324,7 +317,6 @@ class PresenceProtocolTest(unittest.TestCase):
         self.assertEquals(u'Praat met me!', statuses['nl'])
         self.assertEquals(u'50', unicode(element.priority))
 
-
     def test_availableSender(self):
         """
         It should be possible to pass a sender address.
@@ -333,7 +325,6 @@ class PresenceProtocolTest(unittest.TestCase):
                                 sender=JID('user@example.org'))
         element = self.output[-1]
         self.assertEquals("user@example.org", element.getAttribute('from'))
-
 
     def test_unavailableDirected(self):
         """
@@ -361,7 +352,6 @@ class PresenceProtocolTest(unittest.TestCase):
         self.assertEquals("unavailable", element.getAttribute('type'))
         self.assertEquals("Disconnected", unicode(element.status))
 
-
     def test_unavailableBroadcast(self):
         """
         Test sending of unavailable presence broadcast.
@@ -373,7 +363,6 @@ class PresenceProtocolTest(unittest.TestCase):
         self.assertEquals(None, element.uri)
         self.assertEquals(None, element.getAttribute('to'))
         self.assertEquals("unavailable", element.getAttribute('type'))
-
 
     def test_unavailableBroadcastNoRecipientParameter(self):
         """
@@ -387,7 +376,6 @@ class PresenceProtocolTest(unittest.TestCase):
         self.assertEquals(None, element.getAttribute('to'))
         self.assertEquals("unavailable", element.getAttribute('type'))
 
-
     def test_unavailableSender(self):
         """
         It should be possible to pass a sender address.
@@ -396,7 +384,6 @@ class PresenceProtocolTest(unittest.TestCase):
                                   sender=JID('user@example.org'))
         element = self.output[-1]
         self.assertEquals("user@example.org", element.getAttribute('from'))
-
 
     def test_subscribeSender(self):
         """
@@ -407,7 +394,6 @@ class PresenceProtocolTest(unittest.TestCase):
         element = self.output[-1]
         self.assertEquals("user@example.org", element.getAttribute('from'))
 
-
     def test_unsubscribeSender(self):
         """
         It should be possible to pass a sender address.
@@ -416,7 +402,6 @@ class PresenceProtocolTest(unittest.TestCase):
                                   sender=JID('user@example.org'))
         element = self.output[-1]
         self.assertEquals("user@example.org", element.getAttribute('from'))
-
 
     def test_subscribedSender(self):
         """
@@ -427,7 +412,6 @@ class PresenceProtocolTest(unittest.TestCase):
         element = self.output[-1]
         self.assertEquals("user@example.org", element.getAttribute('from'))
 
-
     def test_unsubscribedSender(self):
         """
         It should be possible to pass a sender address.
@@ -437,7 +421,6 @@ class PresenceProtocolTest(unittest.TestCase):
         element = self.output[-1]
         self.assertEquals("user@example.org", element.getAttribute('from'))
 
-
     def test_probeSender(self):
         """
         It should be possible to pass a sender address.
@@ -446,7 +429,6 @@ class PresenceProtocolTest(unittest.TestCase):
                             sender=JID('user@example.org'))
         element = self.output[-1]
         self.assertEquals("user@example.org", element.getAttribute('from'))
-
 
 
 class RosterClientProtocolTest(unittest.TestCase):
@@ -459,7 +441,6 @@ class RosterClientProtocolTest(unittest.TestCase):
         self.protocol = xmppim.RosterClientProtocol()
         self.protocol.xmlstream = self.stub.xmlstream
         self.protocol.connectionInitialized()
-
 
     def test_removeItem(self):
         """

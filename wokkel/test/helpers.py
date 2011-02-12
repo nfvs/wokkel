@@ -11,6 +11,7 @@ from twisted.words.xish.utility import EventDispatcher
 
 from wokkel.generic import parseXml
 
+
 class XmlStreamStub(object):
     """
     Stub for testing objects that communicate through XML Streams.

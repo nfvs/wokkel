@@ -17,6 +17,7 @@ from wokkel import disco, iwokkel, ping
 from wokkel.generic import parseXml
 from wokkel.test.helpers import XmlStreamStub
 
+
 class PingClientProtocolTest(unittest.TestCase):
     """
     Tests for L{ping.PingClientProtocol}.
@@ -27,7 +28,6 @@ class PingClientProtocolTest(unittest.TestCase):
         self.protocol = ping.PingClientProtocol()
         self.protocol.xmlstream = self.stub.xmlstream
         self.protocol.connectionInitialized()
-
 
     def test_ping(self):
         """
@@ -49,7 +49,6 @@ class PingClientProtocolTest(unittest.TestCase):
 
         return d
 
-
     def test_pingWithSender(self):
         """
         Pinging a service with a sender address should include that address.
@@ -64,7 +63,6 @@ class PingClientProtocolTest(unittest.TestCase):
         self.stub.send(response)
 
         return d
-
 
     def test_pingNotSupported(self):
         """
@@ -83,7 +81,6 @@ class PingClientProtocolTest(unittest.TestCase):
         self.stub.send(response)
 
         return d
-
 
     def test_pingStanzaError(self):
         """
@@ -105,7 +102,6 @@ class PingClientProtocolTest(unittest.TestCase):
         return d
 
 
-
 class PingHandlerTest(unittest.TestCase):
     """
     Tests for L{ping.PingHandler}.
@@ -116,7 +112,6 @@ class PingHandlerTest(unittest.TestCase):
         self.protocol = ping.PingHandler()
         self.protocol.xmlstream = self.stub.xmlstream
         self.protocol.connectionInitialized()
-
 
     def test_onPing(self):
         """
@@ -132,7 +127,6 @@ class PingHandlerTest(unittest.TestCase):
         self.assertEquals('test@example.com', response.getAttribute('to'))
         self.assertEquals('result', response.getAttribute('type'))
 
-
     def test_onPingHandled(self):
         """
         The ping handler should mark the stanza as handled.
@@ -145,13 +139,11 @@ class PingHandlerTest(unittest.TestCase):
 
         self.assertTrue(iq.handled)
 
-
     def test_interfaceIDisco(self):
         """
         The ping handler should provice Service Discovery information.
         """
         verify.verifyObject(iwokkel.IDisco, self.protocol)
-
 
     def test_getDiscoInfo(self):
         """
@@ -170,7 +162,6 @@ class PingHandlerTest(unittest.TestCase):
         d.addCallback(cb)
         return d
 
-
     def test_getDiscoInfoNode(self):
         """
         The ping namespace should not be returned for a node.
@@ -187,7 +178,6 @@ class PingHandlerTest(unittest.TestCase):
                                 'test')
         d.addCallback(cb)
         return d
-
 
     def test_getDiscoItems(self):
         """

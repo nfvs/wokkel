@@ -23,6 +23,7 @@ except ImportError:
 from wokkel import component
 from wokkel.generic import XmlPipe
 
+
 class InternalComponentTest(unittest.TestCase):
     """
     Tests for L{component.InternalComponent}.
@@ -32,15 +33,12 @@ class InternalComponentTest(unittest.TestCase):
         self.router = component.Router()
         self.component = component.InternalComponent(self.router, 'component')
 
-
     def test_interface(self):
         """
         L{component.InternalComponent} implements
         L{IXMPPHandlerCollection}.
         """
         verifyObject(IXMPPHandlerCollection, self.component)
-
-
 
     def test_startServiceRunning(self):
         """
@@ -50,7 +48,6 @@ class InternalComponentTest(unittest.TestCase):
         self.component.startService()
         self.assertTrue(self.component.running)
 
-
     def test_startServiceAddRoute(self):
         """
         Starting the service creates a new route.
@@ -58,11 +55,9 @@ class InternalComponentTest(unittest.TestCase):
         self.component.startService()
         self.assertIn('component', self.router.routes)
 
-
     def test_startServiceNoDomain(self):
         self.component = component.InternalComponent(self.router)
         self.component.startService()
-
 
     def test_startServiceAddMultipleRoutes(self):
         """
@@ -72,7 +67,6 @@ class InternalComponentTest(unittest.TestCase):
         self.component.startService()
         self.assertIn('component', self.router.routes)
         self.assertIn('component2', self.router.routes)
-
 
     def test_startServiceHandlerDispatch(self):
         """
@@ -93,7 +87,6 @@ class InternalComponentTest(unittest.TestCase):
         self.component.xmlstream.dispatch(None, '//event/test')
         self.assertEquals([None], events)
 
-
     def test_stopServiceNotRunning(self):
         """
         Stopping the service makes it not running.
@@ -101,7 +94,6 @@ class InternalComponentTest(unittest.TestCase):
         self.component.startService()
         self.component.stopService()
         self.assertFalse(self.component.running)
-
 
     def test_stopServiceRemoveRoute(self):
         """
@@ -111,12 +103,10 @@ class InternalComponentTest(unittest.TestCase):
         self.component.stopService()
         self.assertNotIn('component', self.router.routes)
 
-
     def test_stopServiceNoDomain(self):
         self.component = component.InternalComponent(self.router)
         self.component.startService()
         self.component.stopService()
-
 
     def test_startServiceRemoveMultipleRoutes(self):
         """
@@ -127,7 +117,6 @@ class InternalComponentTest(unittest.TestCase):
         self.component.stopService()
         self.assertNotIn('component', self.router.routes)
         self.assertNotIn('component2', self.router.routes)
-
 
     def test_stopServiceHandlerDispatch(self):
         """
@@ -145,7 +134,6 @@ class InternalComponentTest(unittest.TestCase):
         self.component.startService()
         self.component.stopService()
         self.assertEquals(1, len(events))
-
 
     def test_addHandler(self):
         """
@@ -167,7 +155,6 @@ class InternalComponentTest(unittest.TestCase):
         self.component.xmlstream.dispatch(None, '//event/test')
         self.assertEquals([None], events)
 
-
     def test_send(self):
         """
         A message sent from the component ends up at the router.
@@ -181,7 +168,6 @@ class InternalComponentTest(unittest.TestCase):
         self.component.send(message)
 
         self.assertEquals([message], events)
-
 
 
 class RouterTest(unittest.TestCase):
@@ -206,7 +192,6 @@ class RouterTest(unittest.TestCase):
         pipe.source.send(element)
         self.assertEquals([element], routed)
 
-
     def test_route(self):
         """
         Test routing of a message.
@@ -225,7 +210,6 @@ class RouterTest(unittest.TestCase):
         stanza['to'] = 'component2.example.org'
         component1.source.send(stanza)
         self.assertEquals([stanza], outgoing)
-
 
     def test_routeDefault(self):
         """
@@ -250,7 +234,6 @@ class RouterTest(unittest.TestCase):
         self.assertEquals([stanza], outgoing)
 
 
-
 class ListenComponentAuthenticatorTest(unittest.TestCase):
     """
     Tests for L{component.ListenComponentAuthenticator}.
@@ -262,13 +245,11 @@ class ListenComponentAuthenticatorTest(unittest.TestCase):
         self.xmlstream = xmlstream.XmlStream(authenticator)
         self.xmlstream.send = self.output.append
 
-
     def loseConnection(self):
         """
         Stub loseConnection because we are a transport.
         """
         self.xmlstream.connectionLost("no reason")
-
 
     def test_streamStarted(self):
         """
@@ -294,7 +275,6 @@ class ListenComponentAuthenticatorTest(unittest.TestCase):
         self.assertTrue(xs._headerSent)
         self.assertEquals(('/*', xs.authenticator.onElement), observers[-1])
 
-
     def test_streamStartedWrongNamespace(self):
         """
         The received stream header should have a correct namespace.
@@ -310,7 +290,6 @@ class ListenComponentAuthenticatorTest(unittest.TestCase):
         self.assertEquals(1, len(streamErrors))
         self.assertEquals('invalid-namespace', streamErrors[-1].condition)
 
-
     def test_streamStartedNoTo(self):
         """
         The received stream header should have a 'to' attribute.
@@ -324,7 +303,6 @@ class ListenComponentAuthenticatorTest(unittest.TestCase):
                          "xmlns:stream='http://etherx.jabber.org/streams'>")
         self.assertEquals(1, len(streamErrors))
         self.assertEquals('improper-addressing', streamErrors[-1].condition)
-
 
     def test_onElement(self):
         """
@@ -356,7 +334,6 @@ class ListenComponentAuthenticatorTest(unittest.TestCase):
         self.assertFalse(handshakes)
         self.assertEquals('not-authorized', streamErrors[-1].condition)
 
-
     def test_onHandshake(self):
         """
         Receiving a handshake matching the secret authenticates the stream.
@@ -373,7 +350,6 @@ class ListenComponentAuthenticatorTest(unittest.TestCase):
         xs.authenticator.onHandshake(theHash)
         self.assertEqual('<handshake/>', self.output[-1])
         self.assertEquals(1, len(authd))
-
 
     def test_onHandshakeWrongHash(self):
         """
@@ -396,7 +372,6 @@ class ListenComponentAuthenticatorTest(unittest.TestCase):
         self.assertEquals(0, len(authd))
 
 
-
 class XMPPComponentServerFactoryTest(unittest.TestCase):
     """
     Tests for L{component.XMPPComponentServerFactory}.
@@ -409,7 +384,6 @@ class XMPPComponentServerFactoryTest(unittest.TestCase):
         self.xmlstream = self.factory.buildProtocol(None)
         self.xmlstream.thisEntity = JID('component.example.org')
 
-
     def test_makeConnection(self):
         """
         A new connection increases the stream serial count. No logs by default.
@@ -421,7 +395,6 @@ class XMPPComponentServerFactoryTest(unittest.TestCase):
         self.assertIdentical(None, self.xmlstream.rawDataInFn)
         self.assertIdentical(None, self.xmlstream.rawDataOutFn)
 
-
     def test_makeConnectionLogTraffic(self):
         """
         Setting logTraffic should set up raw data loggers.
@@ -431,7 +404,6 @@ class XMPPComponentServerFactoryTest(unittest.TestCase):
                                 xmlstream.STREAM_CONNECTED_EVENT)
         self.assertNotIdentical(None, self.xmlstream.rawDataInFn)
         self.assertNotIdentical(None, self.xmlstream.rawDataOutFn)
-
 
     def test_onError(self):
         """
@@ -447,7 +419,6 @@ class XMPPComponentServerFactoryTest(unittest.TestCase):
         self.xmlstream.dispatch(reason, xmlstream.STREAM_ERROR_EVENT)
         self.assertEqual(1, len(self.flushLoggedErrors(TestError)))
 
-
     def test_connectionInitialized(self):
         """
         Make sure a new stream is added to the routing table.
@@ -456,7 +427,6 @@ class XMPPComponentServerFactoryTest(unittest.TestCase):
         self.assertIn('component.example.org', self.router.routes)
         self.assertIdentical(self.xmlstream,
                              self.router.routes['component.example.org'])
-
 
     def test_connectionLost(self):
         """
