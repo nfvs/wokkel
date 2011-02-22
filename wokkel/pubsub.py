@@ -272,7 +272,7 @@ class PubSubRequest(generic.Stanza):
         'unsubscribe': ['nodeOrEmpty', 'jid', 'subidOrNone'],
         'optionsGet': ['nodeOrEmpty', 'jid', 'subidOrNone'],
         'optionsSet': ['nodeOrEmpty', 'jid', 'options', 'subidOrNone'],
-        'subscriptions': [],
+        'subscriptions': ['nodeOrEmpty'],
         'affiliations': [],
         'create': ['nodeOrNone', 'configureOrNone'],
         'default': ['default'],
@@ -1176,7 +1176,7 @@ class PubSubService(XMPPHandler, IQHandlerMixin):
             if request is None:
                 return defer.succeed(None)
 
-        # Process the request itself, 
+        # Process the request itself,
         if resource is not self:
             try:
                 handler = getattr(resource, request.verb)
